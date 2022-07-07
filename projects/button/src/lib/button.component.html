@@ -1,0 +1,5 @@
+<button [class]="buttonClass" [attr.id]="id ? id : null" [disabled]="disabled" (click)="OnClick()" [attr.aria-label]="ariaLabel ? ariaLabel : null" [attr.aria-disabled]="disabled ? disabled : null" [attr.type]="type ? type : null" [attr.name]="name ? name : null" [attr.value]="value ? value : null">
+    <ng-template  *ngIf="IconPositionedFront" [ngTemplateOutlet]="IconPositionedFront"></ng-template>
+    <ng-content></ng-content>
+    <ng-template  *ngIf="IconPositionedEnd" [ngTemplateOutlet]="IconPositionedEnd"></ng-template>
+</button>

@@ -1,0 +1,51 @@
+@import './scss/variables';
+
+@mixin btn($bg-color, $color, $variant, $size) {
+    display: flex;
+    align-items: center;
+    min-width: map-get($min-width, $size);
+    border-radius: $base-border-radius;
+    font-family: $base-font-family;
+    font-weight: $base-font-weight;
+    font-size: map-get($font-size, $size);
+    line-height: map-get($line-height, $size);
+    text-align: center;
+    cursor: pointer;
+    padding: map-get($padding, $size);
+    background: $bg-color;
+    color: $color;
+    height: map-get($height, $size);
+    @if($variant=="basic") {
+        border: map-get($border-color, "basic");
+    }
+    @else {
+        border: none;
+    }
+};
+@each $key_var, $val_var in $variant {
+    @if($key_var != "disabled") {
+        @each $key_size in $size {
+            .btn-#{$key_var}-#{$key_size} {
+                @include btn($val_var, map-get($text, $key_var), $key_var, $key_size);
+                &:hover {
+                    background: map-get($variant_hover, $key_var);
+                }
+                &:active {
+                    background: map-get($variant_active, $key_var);
+                    transform: scale(0.95);
+                }
+                &:focus {
+                    outline: $base-outline;
+                    outline-offset: 4px;
+                }
+                &:disabled {
+                    background: map-get($variant, "disabled");
+                    border: map-get($border-color, "disabled");
+                    color: map-get($text, "disabled");
+                    transform: none;
+                    cursor: default;
+                }
+            }
+        }
+    }
+};

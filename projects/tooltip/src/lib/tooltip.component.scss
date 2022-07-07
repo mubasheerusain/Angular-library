@@ -1,0 +1,53 @@
+@use "sass:map";
+
+$base-tooltip-variant: 'dark', 'light';
+
+$base-background-color: (
+    "dark": #191919,
+    "light": #FFFFFF
+);
+
+$base-color: (
+    "dark": #FFFFFF,
+    "light": #191919
+);
+
+@each $val in $base-tooltip-variant {
+    .tippy-box[data-theme~=#{$val}] {
+        background-color: map.get($base-background-color, $val);
+        color: map.get($base-color, $val);
+        border-radius: 8px;
+        .tippy-content {
+            padding: 12px;
+            font-family: 'Open Sans';
+            font-style: normal;
+            font-weight: 400;
+            font-size: 12px;
+            line-height: 125%;
+        }
+        .tippy-arrow {
+            width: 12px;
+            height: 12px;
+            color: map.get($base-background-color, $val);
+        }
+    }
+}
+
+.tippy-box[data-placement^=top], .tippy-box[data-placement^=bottom] {
+    right: 2px;
+}
+.tippy-box[data-placement^=left], .tippy-box[data-placement^=right] {
+    bottom: 2px;
+}
+.tippy-box[data-placement^=top-start],.tippy-box[data-placement^=bottom-start] {
+    right: 14px;
+}
+.tippy-box[data-placement^=top-end],.tippy-box[data-placement^=bottom-end] {
+    left: 10px;
+}
+.tippy-box[data-placement^=right-start], .tippy-box[data-placement^=left-start] {
+    bottom: 12px;
+}
+.tippy-box[data-placement^=right-end], .tippy-box[data-placement^=left-end] {
+    top: 10px;
+}

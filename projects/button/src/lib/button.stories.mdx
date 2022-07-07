@@ -1,0 +1,274 @@
+import { Meta, Story, Canvas } from '@storybook/addon-docs';
+import { ButtonComponent } from './button.component';
+
+<Meta title="Mdx/Button" component={ButtonComponent} />
+
+export const Template = (args) => ({
+    props: args,
+    template: `
+    <div style="display: flex; border: grey 1px solid; padding: 24px; align-items: center; column-gap: 10px;">
+    <lib-button [variant]="variant" [size]="'large'" [disabled]="disabled">Button Text</lib-button>
+    <lib-button [variant]="variant" [size]="'medium'" [disabled]="disabled">Button Text</lib-button>
+    <lib-button [variant]="variant" [size]="'small'" [disabled]="disabled">Button Text</lib-button>
+    </div>
+    `,
+});
+
+export const IconTemplate = (args) => ({
+    props: args,
+    template: `
+    <ng-template #LeadingAddIcon>
+        <svg style="margin-right: 9.6px;" width="13" height="13" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 9H11V2H9V9H2V11H9V18H11V11H18V9Z" fill="currentColor" />
+        </svg>
+    </ng-template>
+    <ng-template #trailingAddIcon>
+        <svg style="margin-left: 9.6px" width="13" height="13" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 9H11V2H9V9H2V11H9V18H11V11H18V9Z" fill="currentColor" />
+        </svg>
+    </ng-template>
+    <div style="display: flex; border: grey 1px solid; padding: 24px; align-items: center; column-gap: 10px;">
+    <lib-button [variant]="variant" [size]="'large'" [disabled]="disabled" [Icon]="End ? trailingAddIcon : LeadingAddIcon" [End]="End">Button Text</lib-button>
+    <lib-button [variant]="variant" [size]="'medium'" [disabled]="disabled" [Icon]="End ? trailingAddIcon : LeadingAddIcon" [End]="End">Button Text</lib-button>
+    <lib-button [variant]="variant" [size]="'small'" [disabled]="disabled" [Icon]="End ? trailingAddIcon : LeadingAddIcon" [End]="End">Button Text</lib-button>
+    </div>
+    `,
+});
+
+# Button
+
+Custom `Button` Component For CXOne Shared UI. 
+
+## Primary 
+
+`Primary` is the Default variant for this button component. And also their are other available variant like `Basic`, `Text` and `Warn`. The Button also comes with a variable sizing feature like `Large`, `Medium` and `Small`.
+
+<Canvas>
+    <Story
+    name="Primary"
+    args={{
+        variant: 'primary',
+        disabled: false
+    }}>
+    {Template.bind({})}
+    </Story>
+</Canvas>
+
+## Basic 
+
+`Basic` is another variant available in the button. It comes with a light background with oulined feel.
+
+<Canvas>
+<Story
+   name="Basic"
+   args={{
+     variant: 'basic',
+    disabled: false
+   }}>
+   {Template.bind({})}
+</Story>
+</Canvas>
+
+## Text 
+
+`Text` variant comes with a transparent background without border and light shade on hover.
+
+<Canvas>
+<Story
+   name="Text"
+   args={{
+     variant: 'text',
+    disabled: false
+   }}>
+   {Template.bind({})}
+</Story>
+</Canvas>
+
+## Warn 
+
+`Warn` as the name suggest add a striking red color to the button.
+
+<Canvas>
+<Story
+   name="Warn"
+   args={{
+     variant: 'warn',
+    disabled: false
+   }}>
+   {Template.bind({})}
+</Story>
+</Canvas>
+
+## Disabled 
+
+`Disabled` property is provided in the button to disable the button and the button looks like below on disabled state.
+
+<Canvas>
+<Story
+   name="Disabled"
+   args={{
+     variant: 'warn',
+    disabled: true
+   }}>
+   {Template.bind({})}
+</Story>
+</Canvas>
+
+# With Leading Icon
+
+## Leading Icon Primary 
+
+`Leading Icon Primary` is a button with an icon on the front, the icon is provided as a input to the icon parameter. The icon should be a template and the id of the template is provided as a input.
+
+<Canvas>
+<Story
+   name="Leading Icon Primary"
+   args={{
+    variant: 'primary',
+    disabled: false
+   }}>
+   {IconTemplate.bind({})}
+</Story>
+</Canvas>
+
+## Leading Icon Basic 
+
+`Leading Icon Basic` is a button with basic variant and icon as a input.
+
+<Canvas>
+<Story
+   name="Leading Icon Basic"
+   args={{
+    variant: 'basic',
+    disabled: false
+   }}>
+   {IconTemplate.bind({})}
+</Story>
+</Canvas>
+
+## Leading Icon Text 
+
+`Leading Icon Text` is a button with text variant and icon as a input.
+
+<Canvas>
+<Story
+   name="Leading Icon Text"
+   args={{
+    variant: 'text',
+    disabled: false
+   }}>
+   {IconTemplate.bind({})}
+</Story>
+</Canvas>
+
+## Leading Icon Warn 
+
+`Leading Icon Warn` is a button with warn variant and icon as a input.
+
+<Canvas>
+<Story
+   name="Leading Icon Warn"
+   args={{
+    variant: 'warn',
+    disabled: false
+   }}>
+   {IconTemplate.bind({})}
+</Story>
+</Canvas>
+
+## Leading Icon Disabled 
+
+`Leading Icon Disabled` is a button with disabled as `True` and icon as a input.
+
+<Canvas>
+<Story
+   name="Leading Icon Disabled"
+   args={{
+    variant: 'warn',
+    disabled: true
+   }}>
+   {IconTemplate.bind({})}
+</Story>
+</Canvas>
+
+# With Trailing Icon
+
+## Trailing Icon Primary 
+
+`Trailing Icon Primary` is a button with primary variant and icon as a input. It also need additional End parameter as `True`, for the icon to be positioned at end.
+
+<Canvas>
+<Story
+   name="Trailing Icon Primary"
+   args={{
+    variant: 'primary',
+    disabled: false,
+    End: true
+   }}>
+   {IconTemplate.bind({})}
+</Story>
+</Canvas>
+
+## Trailing Icon Basic 
+
+`Trailing Icon Basic` is a button with basic variant, End as true and icon as a input.
+
+<Canvas>
+<Story
+   name="Trailing Icon Basic"
+   args={{
+    variant: 'basic',
+    disabled: false,
+    End: true
+   }}>
+   {IconTemplate.bind({})}
+</Story>
+</Canvas>
+
+## Trailing Icon Text 
+
+`Trailing Icon Text` is a button with text variant, End as true and icon as a input.
+
+<Canvas>
+<Story
+   name="Trailing Icon Text"
+   args={{
+    variant: 'text',
+    disabled: false,
+    End: true
+   }}>
+   {IconTemplate.bind({})}
+</Story>
+</Canvas>
+
+## Trailing Icon Warn 
+
+`Trailing Icon Warn` is a button with warn variant, End as true and icon as a input.
+
+<Canvas>
+<Story
+   name="Trailing Icon Warn"
+   args={{
+    variant: 'warn',
+    disabled: false,
+    End: true
+   }}>
+   {IconTemplate.bind({})}
+</Story>
+</Canvas>
+
+## Trailing Icon Disabled 
+
+`Trailing Icon Disabled` is a button with basic variant, End as true, icon as a input and disable as true.
+
+<Canvas>
+<Story
+   name="Trailing Icon Disabled"
+   args={{
+    variant: 'warn',
+    disabled: true,
+    End: true
+   }}>
+   {IconTemplate.bind({})}
+</Story>
+</Canvas>

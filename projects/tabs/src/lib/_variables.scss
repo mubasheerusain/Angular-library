@@ -1,0 +1,40 @@
+@import 'https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700';
+
+/* variant */
+$variant: (
+  "primary": #f7fafc,
+  "basic": transparent
+);
+
+/* size Variants */
+$size: "large", "extraLarge";
+
+/* color */
+$base-text-color: #3d6172;
+$base-text-color-enabled: #{var(--color-interface-blue450)};
+
+/* border */
+$base-border-bottom: #dae2e7;
+$base-border-bottom-focus: #{var(--color-globalstate-inactive-border)};
+$base-border-bottom-active: #{var(--color-interface-blue450)};
+
+/* background */
+$base-background: transparent;
+$base-background-hover: #{var(--color-interface-background50)};
+$base-background-focus: #{var(--color-button-basic-pressed)};
+
+/* padding */
+$base-padding-body: 20px;
+$padding-header: (
+  "extraLarge": 0 20px,
+  "large": 0 16px
+);
+$padding-label: (
+  "extraLarge": 12px 20px,
+  "large": 8px 16px
+);
+
+/* font */
+$base-font-size: #{var(--typography-opensans-body-body1-font-size)};
+$base-line-height: #{var(--typography-opensans-headline-h3-font-size)};
+$base-font-weight: #{var(--typography-opensans-body-buttonnormal-font-weight)};

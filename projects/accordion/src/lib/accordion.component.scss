@@ -1,0 +1,81 @@
+.mat-expansion-panel,
+.mat-expansion-panel:not([class*=mat-elevation-z]) {
+    overflow: visible;
+
+    .mat-expansion-panel-header {
+        padding: 15px 16px 9px 0;
+        border-top: 1px solid #767676;
+        border-radius: 0;
+        font-family: 'Open Sans';
+        font-style: normal;
+        font-weight: 700;
+        font-size: 14px;
+        line-height: 130%;
+        color: #191919;
+
+        span {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            svg {
+                color: #767676;
+                width: 20px;
+                height: 20px;
+                transition: all 0.2s ease-out;
+            }
+
+            span {
+                gap: 8px;
+
+                svg {
+                    width: 16px;
+                    height: 16px;
+                }
+            }
+        }
+
+        &[aria-disabled=true] {
+            border-color: #C3C5C9;
+            color: #8E9CAB;
+
+            span {
+                svg {
+                    color: #8E9CAB;
+                }
+            }
+        }
+
+        &:focus-visible {
+            outline: 1px solid #5804FF;
+            outline-offset: 4px;
+        }
+    }
+
+    .mat-expansion-panel-content {
+        overflow: hidden;
+        max-height: 0;
+        transition: all 0.3s ease-out;
+        .mat-expansion-panel-body {
+            padding: 0 16px;
+            font-family: 'Open Sans';
+            font-style: normal;
+            font-weight: 400;
+            font-size: 13px;
+            line-height: 120%;
+            color: #191919;
+        }
+    }
+
+    .mat-expanded {
+        span {
+            svg {
+                transform: rotate(90deg);
+            }
+        }
+    }
+}
+
+.mat-expansion-panel .mat-expanded ~ .mat-expansion-panel-content {
+    max-height: 100%;
+}

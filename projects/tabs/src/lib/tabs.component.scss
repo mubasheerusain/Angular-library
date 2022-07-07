@@ -1,0 +1,73 @@
+@use './variables' as *;
+@use "sass:map";
+
+@each $key_var, $val_var in $variant {
+    @each $key_size in $size {
+        .tabs-#{$key_var}-#{$key_size} {
+            mat-tab-group {
+                &.mat-tab-group.mat-primary {
+                    .mat-tab-header {
+                        overflow: visible;
+                        background: $val_var;
+                        padding: 0 16px;
+                        .mat-tab-list {
+                            overflow: visible;
+                            .mat-tab-labels {
+                                .mat-tab-label {
+                                    padding: map.get($padding-label, $key_size);
+                                    color: $base-text-color;
+                                    font-family: 'Open Sans';
+                                    font-style: normal;
+                                    font-weight: 600;
+                                    font-size: 13px;
+                                    line-height: 18px;
+                                    border-bottom: 2px solid transparent;
+                                    opacity: 1;
+                                    min-width: unset;
+                                    .mat-tab-label-content {
+                                        display: inline-flex;
+                                        gap: 8px;
+                                    }
+                                    &:hover {
+                                        background: $base-background-hover;
+                                        border-bottom: 2px solid $base-border-bottom-focus;
+                                    }
+                                    &:focus {
+                                        outline: 1px solid #5804FF;
+                                        outline-offset: 4px;
+                                        z-index: 9999;
+                                    }
+                                    &:focus:enabled {
+                                        background: $base-background-focus;
+                                        border-bottom: 2px solid $base-border-bottom-focus;
+                                    }
+                                }
+                                .mat-tab-label-active {
+                                    padding: map.get($padding-label, $key_size);
+                                    color: $base-text-color-enabled;
+                                    border-bottom: 2px solid $base-border-bottom-active;
+                                    min-width: unset;
+                                    &:hover {
+                                        background: $base-background-hover;
+                                        border-bottom: 2px solid $base-border-bottom-active;
+
+                                    }
+                                    &:focus:enabled {
+                                        background: $base-background-focus;
+                                        border-bottom: 2px solid $base-border-bottom-active;
+                                    }
+                                }
+                            }
+                        }
+                        .mat-tab-label-container {
+                            overflow: visible;
+                        }
+                        .mat-ink-bar {
+                            background: none;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
