@@ -7,11 +7,11 @@ import tippy from 'tippy.js';
 })
 export class TooltipDirective implements AfterContentInit {
 
-    @Input() popoverTemplate: TemplateRef<any> | null = null;
+    @Input() popoverTemplate: any;
 
     @Input() content: string | null = null;
 
-    @Input() trigger: 'mouseenter focus' | 'click' | 'focusin' | 'mouseenter click' = 'mouseenter focus';
+    @Input() trigger: 'mouseenter focus' | 'click' | 'focusin' | 'mouseenter click' = 'focusin';
 
     @Input() position: 'top' | 'top-start' | 'top-end' | 'right' | 'right-start' | 'right-end' | 'bottom' | 'bottom-start' | 'bottom-end' | 'left' | 'left-start' | 'left-end' | 'auto' | 'auto-start' | 'auto-end' = 'top';
 
@@ -25,54 +25,44 @@ export class TooltipDirective implements AfterContentInit {
 
     @Input() arrow: boolean = false;
 
-    @Input() ariaDescribedBy: string | null = null;
-
     tippyOptions!: Object;
 
     instance!: any;
 
     open = false;
 
+    element!: Element;
+
     constructor(private el: ElementRef) {
         this.el = el;
     }
 
     ngAfterContentInit(): void {
-        const viewRef = this.popoverTemplate?.createEmbeddedView({ userName: 'jbond' });
-        var htmlTemplate = '';
-        viewRef?.rootNodes.map(ele => {
-            if (ele.outerHTML) {
-                htmlTemplate += ele.outerHTML.toString()
-            }
-            else {
-                htmlTemplate += ele.textContent
-            }
-        });
+        if (this.popoverTemplate) {
+            this.element = document.createElement('div');
+            this.element.append(...this.popoverTemplate.childNodes);
+        }
         let popperOptions = { modifiers: [{ name: 'arrow', options: { padding: 15, } }] }
-        this.tippyOptions = { 
+        this.tippyOptions = {
             arrow: this.arrow,
-            trigger: this.trigger, 
-            interactive: this.interactive, 
-            placement: this.position, 
-            allowHTML: true, 
-            maxWidth: this.maxWidth, 
-            hideOnClick: this.closeOnOutsideClick, 
-            theme: this.darkMode ? 'dark' : 'light', 
-            popperOptions: popperOptions, 
-            onMount: (instance: any) => { 
-                if(this.ariaDescribedBy) {
-                     instance.reference.setAttribute('aria-describedby', this.ariaDescribedBy); 
-                } 
-            }, 
-            onHide: (instance: any) => {
-                instance.reference.removeAttribute('aria-describedby'); 
+            trigger: this.trigger,
+            interactive: this.interactive,
+            placement: this.position,
+            allowHTML: true,
+            maxWidth: this.maxWidth,
+            hideOnClick: this.closeOnOutsideClick,
+            theme: this.darkMode ? 'dark' : 'light',
+            popperOptions: popperOptions,
+            onHide: () => {
+                this.el.nativeElement.removeAttribute('aria-label');
             },
             onShow: (instance: any) => {
-                if(htmlTemplate) {
-                    instance.setContent(htmlTemplate);
+                if (this.element) {
+                    instance.setContent(this.element);
                 }
-                else if(this.content) {
+                else if (this.content) {
                     instance.setContent(this.content);
+                    this.el.nativeElement.setAttribute('aria-label', this.content);
                 }
             }
         };
@@ -91,7 +81,7 @@ export class TooltipDirective implements AfterContentInit {
     }
 
     toggle() {
-        if(this.open) {
+        if (this.open) {
             this.hide();
         }
         else {

@@ -25,6 +25,8 @@
     "@angular/router": "~13.3.0",
     "@popperjs/core": "^2.11.5",
     "@storybook/addon-controls": "^6.5.9",
+    "http-server": "^14.1.1",
+    "moment": "^2.29.4",
     "rxjs": "~7.5.0",
     "tippy.js": "^6.3.7",
     "tslib": "^2.3.0",
@@ -36,11 +38,12 @@
     "@angular/compiler-cli": "~13.3.0",
     "@babel/core": "^7.18.0",
     "@compodoc/compodoc": "^1.1.19",
+    "@mdx-js/react": "^2.1.3",
     "@storybook/addon-actions": "^6.5.3",
-    "@storybook/addon-essentials": "^6.5.3",
+    "@storybook/addon-essentials": "^6.4.22",
     "@storybook/addon-interactions": "^6.5.3",
     "@storybook/addon-links": "^6.5.3",
-    "@storybook/angular": "^6.5.3",
+    "@storybook/angular": "^6.1.21",
     "@storybook/builder-webpack5": "^6.5.3",
     "@storybook/manager-webpack5": "^6.5.3",
     "@storybook/testing-library": "^0.0.11",
@@ -55,5 +58,11 @@
     "karma-jasmine-html-reporter": "~1.7.0",
     "ng-packagr": "^13.0.0",
     "typescript": "~4.6.2"
+  },
+  "overrides": {
+    "@mdx-js/react": {
+      "react": "^18.2.0",
+      "react-dom": "^18.2.0"
+    }
   }
 }

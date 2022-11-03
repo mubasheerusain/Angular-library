@@ -9,9 +9,26 @@
         "dist/button",
         "projects/button/src/public-api"
       ],
+      "datepicker": [
+        "dist/datepicker/datepicker",
+        "dist/datepicker"
+      ],
+      "loader": [
+        "dist/loader/loader",
+        "dist/loader",
+        "projects/loader/src/public-api"
+      ],
+      "progressBar": [
+        "dist/progress-bar/progress-bar",
+        "dist/progress-bar"
+      ],
       "tabs": [
         "dist/tabs/tabs",
         "dist/tabs",
+      ],
+      "tree": [
+        "dist/tree/tree",
+        "dist/tree"
       ]
     },
     "outDir": "./dist/out-tsc",
