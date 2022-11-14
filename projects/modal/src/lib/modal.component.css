@@ -1,0 +1,67 @@
+.mat-dialog-container {
+  padding: 0;
+  border-radius: 8px;
+  -webkit-box-shadow: 0px 8px 12px 1px rgba(0, 0, 0, 0.2);
+          box-shadow: 0px 8px 12px 1px rgba(0, 0, 0, 0.2);
+}
+
+.cdk-overlay-dark-backdrop {
+  background: rgba(0, 0, 0, 0.48);
+}
+
+.mat-dialog-title {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  padding: 20px 0px 20px 20px;
+  margin: 0;
+}
+
+.mat-dialog-title .modalHeader {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  gap: 8px;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.mat-dialog-title .closeIcon button {
+  border: none;
+  background: none;
+  outline: none;
+  cursor: pointer;
+  padding: 12px;
+}
+
+.mat-dialog-content {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 120%;
+  color: #333333;
+  margin: 0;
+}
+
+.mat-dialog-content span {
+  display: block;
+  padding-right: 24px;
+  padding-left: 52px;
+}
+
+.mat-dialog-actions {
+  gap: 8px;
+  padding: 24px;
+  min-height: 0;
+}
+/*# sourceMappingURL=modal.component.css.map */

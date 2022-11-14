@@ -1,7 +1,7 @@
 import { MAT_DATE_RANGE_SELECTION_STRATEGY } from "@angular/material/datepicker";
 import { Meta, moduleMetadata, Story } from "@storybook/angular";
 import { DatepickerModule } from "./datepicker.module";
-import { WeekRangeSelectionStrategy } from "./dateweekpicker.component";
+import { MultiWeekRangeSelectionStrategy } from "./multiWeekPicker.component";
 
 export default {
     title: 'DatePicker',
@@ -12,18 +12,18 @@ export default {
             providers: [
                 {
                   provide: MAT_DATE_RANGE_SELECTION_STRATEGY,
-                  useClass: WeekRangeSelectionStrategy,
+                  useClass: MultiWeekRangeSelectionStrategy,
                 }
               ],
         }),
     ]
 } as Meta;
 
-const WeekpickerStory: Story = (args) => ({
+const MultiweekpickerStory: Story = (args) => ({
     props: args,
     template: `
-    <lib-weekpicker></lib-weekpicker>
+    <lib-multiweekpicker></lib-multiweekpicker>
     `
 });
 
-export const Weekpicker = WeekpickerStory.bind({});
+export const Multiweekpicker = MultiweekpickerStory.bind({});

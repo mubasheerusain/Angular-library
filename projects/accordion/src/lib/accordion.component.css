@@ -1,0 +1,95 @@
+.mat-expansion-panel,
+.mat-expansion-panel:not([class*=mat-elevation-z]) {
+  overflow: visible;
+}
+
+.mat-expansion-panel .mat-expansion-panel-header,
+.mat-expansion-panel:not([class*=mat-elevation-z]) .mat-expansion-panel-header {
+  padding: 15px 16px 9px 0;
+  border-top: 1px solid #767676;
+  border-radius: 0;
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 130%;
+  color: #191919;
+}
+
+.mat-expansion-panel .mat-expansion-panel-header span,
+.mat-expansion-panel:not([class*=mat-elevation-z]) .mat-expansion-panel-header span {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  gap: 12px;
+}
+
+.mat-expansion-panel .mat-expansion-panel-header span svg,
+.mat-expansion-panel:not([class*=mat-elevation-z]) .mat-expansion-panel-header span svg {
+  color: #767676;
+  width: 20px;
+  height: 20px;
+  -webkit-transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out;
+}
+
+.mat-expansion-panel .mat-expansion-panel-header span span,
+.mat-expansion-panel:not([class*=mat-elevation-z]) .mat-expansion-panel-header span span {
+  gap: 8px;
+}
+
+.mat-expansion-panel .mat-expansion-panel-header span span svg,
+.mat-expansion-panel:not([class*=mat-elevation-z]) .mat-expansion-panel-header span span svg {
+  width: 16px;
+  height: 16px;
+}
+
+.mat-expansion-panel .mat-expansion-panel-header[aria-disabled=true],
+.mat-expansion-panel:not([class*=mat-elevation-z]) .mat-expansion-panel-header[aria-disabled=true] {
+  border-color: #C3C5C9;
+  color: #8E9CAB;
+}
+
+.mat-expansion-panel .mat-expansion-panel-header[aria-disabled=true] span svg,
+.mat-expansion-panel:not([class*=mat-elevation-z]) .mat-expansion-panel-header[aria-disabled=true] span svg {
+  color: #8E9CAB;
+}
+
+.mat-expansion-panel .mat-expansion-panel-header:focus-visible,
+.mat-expansion-panel:not([class*=mat-elevation-z]) .mat-expansion-panel-header:focus-visible {
+  outline: 1px solid #5804FF;
+  outline-offset: 4px;
+}
+
+.mat-expansion-panel .mat-expansion-panel-content,
+.mat-expansion-panel:not([class*=mat-elevation-z]) .mat-expansion-panel-content {
+  overflow: hidden;
+  max-height: 0;
+  -webkit-transition: all 0.3s ease-out;
+  transition: all 0.3s ease-out;
+}
+
+.mat-expansion-panel .mat-expansion-panel-content .mat-expansion-panel-body,
+.mat-expansion-panel:not([class*=mat-elevation-z]) .mat-expansion-panel-content .mat-expansion-panel-body {
+  padding: 0 16px;
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 120%;
+  color: #191919;
+}
+
+.mat-expansion-panel .mat-expanded span svg,
+.mat-expansion-panel:not([class*=mat-elevation-z]) .mat-expanded span svg {
+  -webkit-transform: rotate(90deg);
+          transform: rotate(90deg);
+}
+
+.mat-expansion-panel .mat-expanded ~ .mat-expansion-panel-content {
+  max-height: 100%;
+}
+/*# sourceMappingURL=accordion.component.css.map */

@@ -1,8 +1,8 @@
-import { AfterViewChecked, Component, ViewEncapsulation, ViewChild, Inject, forwardRef, HostBinding, Input } from '@angular/core';
+import { Component, ViewEncapsulation, ViewChild, Inject, forwardRef, Input } from '@angular/core';
 import { DateAdapter, MatDateFormats, MAT_DATE_FORMATS } from '@angular/material/core';
 import { DefaultMatCalendarRangeStrategy, MatCalendar, MAT_DATE_RANGE_SELECTION_STRATEGY } from '@angular/material/datepicker';
 import { DatepickerHeaderComponent } from './datepickerHeader.component';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { NG_VALUE_ACCESSOR } from '@angular/forms';
 
 //[dateClass]="hideWeekends()" [dateFilter]="disableWeekends" (selectedChange)="onSelectedChange($event)"
 

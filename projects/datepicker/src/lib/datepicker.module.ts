@@ -11,6 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { CalendarComponent } from './calendar.component';
 import { WeekpickerComponent } from './dateweekpicker.component';
+import { MultiweekpickerComponent } from './multiWeekPicker.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { WeekpickerComponent } from './dateweekpicker.component';
     DaterangepickerComponent,
     DatePickerDirective,
     CalendarComponent,
-    WeekpickerComponent
+    WeekpickerComponent,
+    MultiweekpickerComponent
   ],
   imports: [
     MatDatepickerModule,
@@ -34,7 +36,8 @@ import { WeekpickerComponent } from './dateweekpicker.component';
     DaterangepickerComponent,
     DatePickerDirective,
     CalendarComponent,
-    WeekpickerComponent
+    WeekpickerComponent,
+    MultiweekpickerComponent
   ],
   providers: [
     DatePipe

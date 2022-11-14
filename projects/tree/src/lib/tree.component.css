@@ -1,0 +1,24 @@
+.lib-tree {
+  display: block;
+}
+
+.lib-tree .lib-tree-node {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  height: 30px;
+}
+
+.lib-tree .lib-tree-node button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.lib-tree .lib-tree-node:hover {
+  background-color: #f8f8f8;
+}
+/*# sourceMappingURL=tree.component.css.map */

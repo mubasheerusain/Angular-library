@@ -1,10 +1,10 @@
 import { AfterViewChecked, Component, ViewEncapsulation, ViewChild, TemplateRef, Output, EventEmitter, Inject, Injectable, Optional } from '@angular/core';
-import { DateRange, DefaultMatCalendarRangeStrategy, MatCalendar, MatDateRangeSelectionStrategy, MAT_DATE_RANGE_SELECTION_STRATEGY } from '@angular/material/datepicker';
+import { DateRange, MatCalendar, MatDateRangeSelectionStrategy, MAT_DATE_RANGE_SELECTION_STRATEGY } from '@angular/material/datepicker';
 import { DatepickerHeaderComponent } from './datepickerHeader.component';
 import { DateAdapter, MatDateFormats, MAT_DATE_FORMATS } from '@angular/material/core';
 
 @Injectable()
-export class WeekRangeSelectionStrategy<D> implements MatDateRangeSelectionStrategy<D> {
+export class MultiWeekRangeSelectionStrategy<D> implements MatDateRangeSelectionStrategy<D> {
   constructor(private _dateAdapter: DateAdapter<D>) { }
 
   selectionFinished(date: D | null): DateRange<D> {
@@ -61,14 +61,14 @@ export class WeekRangeSelectionStrategy<D> implements MatDateRangeSelectionStrat
 }
 
 @Component({
-  selector: 'lib-weekpicker',
+  selector: 'lib-multiweekpicker',
   template: `
       <div class="calendar-wrapper">
         <mat-calendar
           (selectedChange)="_onSelectedChange($event)"
-          [selected]="selectedWeek"
           [headerComponent]="customHeader"
           [dateClass]="isSelected"
+          [selected]="weekSelected"
           >
         </mat-calendar>
       </div>
@@ -76,37 +76,46 @@ export class WeekRangeSelectionStrategy<D> implements MatDateRangeSelectionStrat
   styleUrls: ['./datepicker.component.scss'],
   encapsulation: ViewEncapsulation.None,
 })
-export class WeekpickerComponent implements AfterViewChecked {
+export class MultiweekpickerComponent implements AfterViewChecked {
   @ViewChild(TemplateRef) templateRef!: TemplateRef<any>;
   @Output() closed = new EventEmitter<void>();
-  selectedWeek!: DateRange<Date>;
+  selectedWeek: any[] = [];
   @ViewChild(MatCalendar) calendar!: MatCalendar<Date>;
   selectedDate!: Date;
   calendarVisible = true;
+  weekSelected:any;
   customHeader = DatepickerHeaderComponent;
+  mockWeek = [new DateRange(new Date('11/13/2022'), new Date('11/19/2022')), new DateRange(new Date('11/20/2022'), new Date('11/26/2022'))]
   monthList = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
   constructor(private dateAdapter: DateAdapter<Date>, @Inject(MAT_DATE_FORMATS) private _dateFormats: MatDateFormats, @Optional()
   @Inject(MAT_DATE_RANGE_SELECTION_STRATEGY)
-  private _rangeSelectionStrategy: WeekRangeSelectionStrategy<any>) {
+  private _rangeSelectionStrategy: MultiWeekRangeSelectionStrategy<any>) {
     this.dateAdapter.setLocale(navigator.language);
     //this._rangeSelectionStrategy.createPreview(new Date());
     //this._onSelectedChange(new Date());
   }
 
   isSelected = (date: Date) => {
-    if (this.selectedWeek?.start && this.selectedWeek?.end) {
-      if (date.toISOString() === this.selectedWeek.start.toISOString()) {
+    return this.selectedWeek.map((dateRange) => {
+      if (date.toISOString() === dateRange.start.toISOString()) {
         return 'mat-calendar-body-range-start mat-calendar-body-in-range selected week'
       }
-      else if (date.toISOString() === this.selectedWeek.end.toISOString()) {
+      else if (date.toISOString() === dateRange.end.toISOString()) {
         return 'mat-calendar-body-range-end mat-calendar-body-in-range selected week'
       }
-      else if (date >= this.selectedWeek.start && date <= this.selectedWeek.end) {
+      else if(date >= dateRange.start && date <= dateRange.end) {
         return 'mat-calendar-body-in-range selected week'
       }
-    }
-    return ''
+      return ''
+    })
+  };
+
+  add = (arr: any[], range: any) => {
+    const start = arr.some(el => el.start.toISOString() === range.start.toISOString());
+    const end = arr.some(el => el.end.toISOString() === range.end.toISOString());
+    if (!start && !end) arr.push(range);
+    return arr;
   }
 
   _onSelectedChange(date: Date | null): void {
@@ -116,7 +125,8 @@ export class WeekpickerComponent implements AfterViewChecked {
         case 0: {
           let start = this.dateAdapter.addCalendarDays(date, 0);
           let end = this.dateAdapter.addCalendarDays(date, 6);
-          this.selectedWeek = new DateRange(start, end);
+          this.add(this.selectedWeek, new DateRange(start, end))
+          this.weekSelected = new DateRange(start, end);
           this.calendar.updateTodaysDate();
           this.calendar.focusActiveCell();
           return
@@ -124,7 +134,8 @@ export class WeekpickerComponent implements AfterViewChecked {
         case 1: {
           let start = this.dateAdapter.addCalendarDays(date, -1);
           let end = this.dateAdapter.addCalendarDays(date, 5);
-          this.selectedWeek = new DateRange(start, end);
+          this.add(this.selectedWeek, new DateRange(start, end))
+          this.weekSelected = new DateRange(start, end);
           this.calendar.updateTodaysDate();
           this.calendar.focusActiveCell();
           return
@@ -132,7 +143,8 @@ export class WeekpickerComponent implements AfterViewChecked {
         case 2: {
           let start = this.dateAdapter.addCalendarDays(date, -2);
           let end = this.dateAdapter.addCalendarDays(date, 4);
-          this.selectedWeek = new DateRange(start, end);
+          this.add(this.selectedWeek, new DateRange(start, end))
+          this.weekSelected = new DateRange(start, end);
           this.calendar.updateTodaysDate();
           this.calendar.focusActiveCell();
           return
@@ -140,7 +152,8 @@ export class WeekpickerComponent implements AfterViewChecked {
         case 3: {
           let start = this.dateAdapter.addCalendarDays(date, -3);
           let end = this.dateAdapter.addCalendarDays(date, 3);
-          this.selectedWeek = new DateRange(start, end);
+          this.add(this.selectedWeek, new DateRange(start, end))
+          this.weekSelected = new DateRange(start, end);
           this.calendar.updateTodaysDate();
           this.calendar.focusActiveCell();
           return
@@ -148,7 +161,8 @@ export class WeekpickerComponent implements AfterViewChecked {
         case 4: {
           let start = this.dateAdapter.addCalendarDays(date, -4);
           let end = this.dateAdapter.addCalendarDays(date, 2);
-          this.selectedWeek = new DateRange(start, end);
+          this.add(this.selectedWeek, new DateRange(start, end))
+          this.weekSelected = new DateRange(start, end);
           this.calendar.updateTodaysDate();
           this.calendar.focusActiveCell();
           return
@@ -156,7 +170,8 @@ export class WeekpickerComponent implements AfterViewChecked {
         case 5: {
           let start = this.dateAdapter.addCalendarDays(date, -5);
           let end = this.dateAdapter.addCalendarDays(date, 1);
-          this.selectedWeek = new DateRange(start, end);
+          this.add(this.selectedWeek, new DateRange(start, end))
+          this.weekSelected = new DateRange(start, end);
           this.calendar.updateTodaysDate();
           this.calendar.focusActiveCell();
           return
@@ -164,27 +179,13 @@ export class WeekpickerComponent implements AfterViewChecked {
         case 6: {
           let start = this.dateAdapter.addCalendarDays(date, -6);
           let end = this.dateAdapter.addCalendarDays(date, 0);
-          this.selectedWeek = new DateRange(start, end);
+          this.add(this.selectedWeek, new DateRange(start, end))
+          this.weekSelected = new DateRange(start, end);
           this.calendar.updateTodaysDate();
           this.calendar.focusActiveCell();
           return
         }
       }
-    }
-  }
-
-  get SelectedRange() {
-    if (this.selectedWeek) {
-      return this.selectedWeek.start?.toLocaleDateString() + ' - ' + (this.selectedWeek.end ? this.selectedWeek.end?.toLocaleDateString() : '');
-    }
-    return '';
-  }
-
-  set SelectedRange(value: any) {
-    if (value) {
-      try {
-        this.selectedWeek = new DateRange(new Date(value.split('-')[0]), new Date(value.split('-')[1]));
-      } catch (e) { }
     }
   }
 

@@ -1,0 +1,65 @@
+.progress-bar-determinate {
+  height: 8px;
+  border-radius: 4px;
+  background: #dbe6f0;
+  border: 1px solid #005c99;
+  padding: 0;
+  margin: 0;
+}
+
+.progress-bar-determinate .progress-bar-fill {
+  background: #005c99;
+  height: 100%;
+  border-radius: 4px;
+}
+
+.progress-bar-indeterminate {
+  height: 8px;
+  border-radius: 4px;
+  background: #dbe6f0;
+  border: 1px solid #005c99;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
+.progress-bar-indeterminate .progress-bar-fill {
+  background: #005c99;
+  height: 100%;
+  border-radius: 4px;
+  -webkit-animation: indeterminateAnimation 0.6s infinite linear;
+          animation: indeterminateAnimation 0.6s infinite linear;
+  -webkit-transform-origin: 0% 50%;
+          transform-origin: 0% 50%;
+}
+
+@-webkit-keyframes indeterminateAnimation {
+  0% {
+    -webkit-transform: translateX(0) scaleX(0);
+            transform: translateX(0) scaleX(0);
+  }
+  40% {
+    -webkit-transform: translateX(0) scaleX(0.4);
+            transform: translateX(0) scaleX(0.4);
+  }
+  100% {
+    -webkit-transform: translateX(100%) scaleX(0.5);
+            transform: translateX(100%) scaleX(0.5);
+  }
+}
+
+@keyframes indeterminateAnimation {
+  0% {
+    -webkit-transform: translateX(0) scaleX(0);
+            transform: translateX(0) scaleX(0);
+  }
+  40% {
+    -webkit-transform: translateX(0) scaleX(0.4);
+            transform: translateX(0) scaleX(0.4);
+  }
+  100% {
+    -webkit-transform: translateX(100%) scaleX(0.5);
+            transform: translateX(100%) scaleX(0.5);
+  }
+}
+/*# sourceMappingURL=progress-bar.component.css.map */

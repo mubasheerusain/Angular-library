@@ -172,133 +172,6 @@
             "type": "injectable"
         },
         {
-            "name": "FiveDayRangeSelectionStrategy",
-            "id": "injectable-FiveDayRangeSelectionStrategy-d860b6f922522bcfc6888890a49217a9f21f014f5f88e0f86e2752ed6e9e7974426055b1758395c55c92907271d5ba0ad1cfba2d6fffc5e4ffba22ffdfb18d5b",
-            "file": "projects/datepicker/src/lib/dateweekpicker.component.ts",
-            "properties": [],
-            "methods": [
-                {
-                    "name": "_createFiveDayRange",
-                    "args": [
-                        {
-                            "name": "date",
-                            "type": "D | null",
-                            "deprecated": false,
-                            "deprecationMessage": ""
-                        }
-                    ],
-                    "optional": false,
-                    "returnType": "DateRange<D>",
-                    "typeParameters": [],
-                    "line": 19,
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "modifierKind": [
-                        121
-                    ],
-                    "jsdoctags": [
-                        {
-                            "name": "date",
-                            "type": "D | null",
-                            "deprecated": false,
-                            "deprecationMessage": "",
-                            "tagName": {
-                                "text": "param"
-                            }
-                        }
-                    ]
-                },
-                {
-                    "name": "createPreview",
-                    "args": [
-                        {
-                            "name": "activeDate",
-                            "type": "D | null",
-                            "deprecated": false,
-                            "deprecationMessage": ""
-                        }
-                    ],
-                    "optional": false,
-                    "returnType": "DateRange<D>",
-                    "typeParameters": [],
-                    "line": 15,
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "jsdoctags": [
-                        {
-                            "name": "activeDate",
-                            "type": "D | null",
-                            "deprecated": false,
-                            "deprecationMessage": "",
-                            "tagName": {
-                                "text": "param"
-                            }
-                        }
-                    ]
-                },
-                {
-                    "name": "selectionFinished",
-                    "args": [
-                        {
-                            "name": "date",
-                            "type": "D | null",
-                            "deprecated": false,
-                            "deprecationMessage": ""
-                        }
-                    ],
-                    "optional": false,
-                    "returnType": "DateRange<D>",
-                    "typeParameters": [],
-                    "line": 11,
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "jsdoctags": [
-                        {
-                            "name": "date",
-                            "type": "D | null",
-                            "deprecated": false,
-                            "deprecationMessage": "",
-                            "tagName": {
-                                "text": "param"
-                            }
-                        }
-                    ]
-                }
-            ],
-            "deprecated": false,
-            "deprecationMessage": "",
-            "description": "",
-            "rawdescription": "\n",
-            "sourceCode": "import { AfterViewChecked, Component, ViewEncapsulation, ViewChild, TemplateRef, Output, EventEmitter, Inject, Injectable } from '@angular/core';\r\nimport { DateRange, DefaultMatCalendarRangeStrategy, MatCalendar, MatDateRangeSelectionStrategy, MAT_DATE_RANGE_SELECTION_STRATEGY } from '@angular/material/datepicker';\r\nimport { DatepickerPanel } from './datepicker.directive';\r\nimport { DatepickerHeaderComponent } from './datepickerHeader.component';\r\nimport { DateAdapter, MatDateFormats, MAT_DATE_FORMATS } from '@angular/material/core';\r\n\r\n@Injectable()\r\nexport class FiveDayRangeSelectionStrategy<D> implements MatDateRangeSelectionStrategy<D> {\r\n  constructor(private _dateAdapter: DateAdapter<D>) {}\r\n\r\n  selectionFinished(date: D | null): DateRange<D> {\r\n    return this._createFiveDayRange(date);\r\n  }\r\n\r\n  createPreview(activeDate: D | null): DateRange<D> {\r\n    return this._createFiveDayRange(activeDate);\r\n  }\r\n\r\n  private _createFiveDayRange(date: D | null): DateRange<D> {\r\n    if (date) {\r\n      const start = this._dateAdapter.addCalendarDays(date, -2);\r\n      const end = this._dateAdapter.addCalendarDays(date, 2);\r\n      return new DateRange<D>(start, end);\r\n    }\r\n\r\n    return new DateRange<D>(null, null);\r\n  }\r\n}\r\n\r\n@Component({\r\n  selector: 'lib-weekpicker',\r\n  template: `\r\n      <div class=\"calendar-wrapper\">\r\n        <mat-calendar\r\n          (selectedChange)=\"_onSelectedChange($event)\"\r\n          [selected]=\"selectedWeek\"\r\n          [headerComponent]=\"customHeader\"\r\n          >\r\n        </mat-calendar>\r\n      </div>\r\n  `,\r\n  styleUrls: ['./datepicker.component.scss'],\r\n  encapsulation: ViewEncapsulation.None,\r\n  providers: [\r\n    {\r\n        provide: MAT_DATE_RANGE_SELECTION_STRATEGY,\r\n        useClass: FiveDayRangeSelectionStrategy,\r\n      },\r\n  ],\r\n})\r\nexport class WeekpickerComponent implements AfterViewChecked, DatepickerPanel {\r\n  @ViewChild(TemplateRef) templateRef!: TemplateRef<any>;\r\n  @Output() closed = new EventEmitter<void>();\r\n  selectedWeek!: DateRange<Date>;\r\n  @ViewChild(MatCalendar) calendar!: MatCalendar<Date>;\r\n  selectedDate!: Date;\r\n  calendarVisible = true;\r\n  customHeader = DatepickerHeaderComponent;\r\n  monthList = [\"January\", \"February\", \"March\", \"April\", \"May\", \"June\", \"July\", \"August\", \"September\", \"October\", \"November\", \"December\"];\r\n\r\n  constructor(private dateAdapter: DateAdapter<Date>, @Inject(MAT_DATE_FORMATS) private _dateFormats: MatDateFormats) {\r\n    this.dateAdapter.setLocale(navigator.language); \r\n  }\r\n\r\n  dateClass=(date: any) => {\r\n    const days =\r\n      (date.getTime() - this.selectedDate.getTime()) / (24 * 60 * 60 * 1000);\r\n    return days >= 0 && days < 5 ? 'red' : null;\r\n  };\r\n  \r\n  redraw(cal:MatCalendar<any>)\r\n  {\r\n      cal.updateTodaysDate() \r\n  }\r\n\r\n  _onSelectedChange(date: Date): void {\r\n    if (\r\n      this.selectedWeek &&\r\n      this.selectedWeek.start &&\r\n      date > this.selectedWeek.start &&\r\n      !this.selectedWeek.end\r\n    ) {\r\n      this.selectedWeek = new DateRange(\r\n        this.selectedWeek.start,\r\n        date\r\n      );\r\n      this.closed.emit();\r\n    } else {\r\n      this.selectedWeek = new DateRange(date, null);\r\n    }\r\n  }\r\n\r\n  get SelectedRange() {\r\n    if(this.selectedWeek){\r\n    return this.selectedWeek.start?.toLocaleDateString()+' - '+ (this.selectedWeek.end ? this.selectedWeek.end?.toLocaleDateString() : '');\r\n    }\r\n    return '';\r\n  }\r\n\r\n  set SelectedRange(value: any){\r\n    if (value) {\r\n      try {\r\n        this.selectedWeek = new DateRange(new Date(value.split('-')[0]),new Date(value.split('-')[1]));\r\n      } catch(e) {}\r\n    }\r\n  }\r\n\r\n  ngAfterViewChecked(): void {\r\n    const circle1 = document.createElement('div');\r\n    circle1.className = 'circle';\r\n    const circle2 = document.createElement('div');\r\n    circle2.className = 'circle';\r\n    const today = document.querySelector(`[aria-label=\"${this.dateAdapter.format(new Date(), this._dateFormats.display.dateA11yLabel)}\"]`);\r\n    const oct4 = document.querySelector(`[aria-label=\"${this.dateAdapter.format(new Date(\"November 4, 2022\"), this._dateFormats.display.dateA11yLabel)}\"]`);\r\n    if (!today?.querySelector('.circle')) {\r\n      today?.appendChild(circle1);\r\n    }\r\n    if (!oct4?.querySelector('.circle')) {\r\n      oct4?.appendChild(circle2);\r\n    }\r\n  }\r\n\r\n}\r\n",
-            "constructorObj": {
-                "name": "constructor",
-                "description": "",
-                "deprecated": false,
-                "deprecationMessage": "",
-                "args": [
-                    {
-                        "name": "_dateAdapter",
-                        "type": "DateAdapter<D>",
-                        "deprecated": false,
-                        "deprecationMessage": ""
-                    }
-                ],
-                "line": 8,
-                "jsdoctags": [
-                    {
-                        "name": "_dateAdapter",
-                        "type": "DateAdapter<D>",
-                        "deprecated": false,
-                        "deprecationMessage": "",
-                        "tagName": {
-                            "text": "param"
-                        }
-                    }
-                ]
-            },
-            "type": "injectable"
-        },
-        {
             "name": "LoaderService",
             "id": "injectable-LoaderService-5b8bebe0d48edb9a42a19f034447368feed6453e0022cea747408a00130660d67f1d51b89a7ad414fa5963ee5e4e7d6cfc6cc5b46f6a2ef26d75858802e41a48",
             "file": "projects/loader/src/lib/loader.service.ts",
@@ -470,6 +343,133 @@
             "type": "injectable"
         },
         {
+            "name": "MultiWeekRangeSelectionStrategy",
+            "id": "injectable-MultiWeekRangeSelectionStrategy-78266da570a000536ff4c24058aa5fa792ae363e8d2f2a92e9b81c9c31fa6d16c5d5bce449d6b9b9994599557a392a98bc44d1c969b587ac1bf3edc9feacdf8f",
+            "file": "projects/datepicker/src/lib/multiWeekPicker.component.ts",
+            "properties": [],
+            "methods": [
+                {
+                    "name": "_createWeekRange",
+                    "args": [
+                        {
+                            "name": "date",
+                            "type": "any | null",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "DateRange<D>",
+                    "typeParameters": [],
+                    "line": 19,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "modifierKind": [
+                        121
+                    ],
+                    "jsdoctags": [
+                        {
+                            "name": "date",
+                            "type": "any | null",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "createPreview",
+                    "args": [
+                        {
+                            "name": "activeDate",
+                            "type": "D | null",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "DateRange<D>",
+                    "typeParameters": [],
+                    "line": 15,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "jsdoctags": [
+                        {
+                            "name": "activeDate",
+                            "type": "D | null",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "selectionFinished",
+                    "args": [
+                        {
+                            "name": "date",
+                            "type": "D | null",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "DateRange<D>",
+                    "typeParameters": [],
+                    "line": 11,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "jsdoctags": [
+                        {
+                            "name": "date",
+                            "type": "D | null",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "deprecated": false,
+            "deprecationMessage": "",
+            "description": "",
+            "rawdescription": "\n",
+            "sourceCode": "import { AfterViewChecked, Component, ViewEncapsulation, ViewChild, TemplateRef, Output, EventEmitter, Inject, Injectable, Optional } from '@angular/core';\r\nimport { DateRange, MatCalendar, MatDateRangeSelectionStrategy, MAT_DATE_RANGE_SELECTION_STRATEGY } from '@angular/material/datepicker';\r\nimport { DatepickerPanel } from './datepicker.directive';\r\nimport { DatepickerHeaderComponent } from './datepickerHeader.component';\r\nimport { DateAdapter, MatDateFormats, MAT_DATE_FORMATS } from '@angular/material/core';\r\n\r\n@Injectable()\r\nexport class MultiWeekRangeSelectionStrategy<D> implements MatDateRangeSelectionStrategy<D> {\r\n  constructor(private _dateAdapter: DateAdapter<D>) { }\r\n\r\n  selectionFinished(date: D | null): DateRange<D> {\r\n    return this._createWeekRange(date);\r\n  }\r\n\r\n  createPreview(activeDate: D | null): DateRange<D> {\r\n    return this._createWeekRange(activeDate);\r\n  }\r\n\r\n  private _createWeekRange(date: any | null): DateRange<D> {\r\n    if (date) {\r\n      switch (date?.getDay()) {\r\n        case 0: {\r\n          let start = this._dateAdapter.addCalendarDays(date, 0);\r\n          let end = this._dateAdapter.addCalendarDays(date, 6);\r\n          return new DateRange(start, end);\r\n        }\r\n        case 1: {\r\n          let start = this._dateAdapter.addCalendarDays(date, -1);\r\n          let end = this._dateAdapter.addCalendarDays(date, 5);\r\n          return new DateRange(start, end);\r\n        }\r\n        case 2: {\r\n          let start = this._dateAdapter.addCalendarDays(date, -2);\r\n          let end = this._dateAdapter.addCalendarDays(date, 4);\r\n          return new DateRange(start, end);\r\n        }\r\n        case 3: {\r\n          let start = this._dateAdapter.addCalendarDays(date, -3);\r\n          let end = this._dateAdapter.addCalendarDays(date, 3);\r\n          return new DateRange(start, end);\r\n        }\r\n        case 4: {\r\n          let start = this._dateAdapter.addCalendarDays(date, -4);\r\n          let end = this._dateAdapter.addCalendarDays(date, 2);\r\n          return new DateRange(start, end);\r\n        }\r\n        case 5: {\r\n          let start = this._dateAdapter.addCalendarDays(date, -5);\r\n          let end = this._dateAdapter.addCalendarDays(date, 1);\r\n          return new DateRange(start, end);\r\n        }\r\n        case 6: {\r\n          let start = this._dateAdapter.addCalendarDays(date, -6);\r\n          let end = this._dateAdapter.addCalendarDays(date, 0);\r\n          return new DateRange(start, end);\r\n        }\r\n      }\r\n    }\r\n\r\n    return new DateRange<D>(null, null);\r\n  }\r\n}\r\n\r\n@Component({\r\n  selector: 'lib-multiweekpicker',\r\n  template: `\r\n      <div class=\"calendar-wrapper\">\r\n        <mat-calendar\r\n          (selectedChange)=\"_onSelectedChange($event)\"\r\n          [headerComponent]=\"customHeader\"\r\n          [dateClass]=\"isSelected\"\r\n          [selected]=\"weekSelected\"\r\n          >\r\n        </mat-calendar>\r\n      </div>\r\n  `,\r\n  styleUrls: ['./datepicker.component.scss'],\r\n  encapsulation: ViewEncapsulation.None,\r\n})\r\nexport class MultiweekpickerComponent implements AfterViewChecked, DatepickerPanel {\r\n  @ViewChild(TemplateRef) templateRef!: TemplateRef<any>;\r\n  @Output() closed = new EventEmitter<void>();\r\n  selectedWeek: any[] = [];\r\n  @ViewChild(MatCalendar) calendar!: MatCalendar<Date>;\r\n  selectedDate!: Date;\r\n  calendarVisible = true;\r\n  weekSelected:any;\r\n  customHeader = DatepickerHeaderComponent;\r\n  mockWeek = [new DateRange(new Date('11/13/2022'), new Date('11/19/2022')), new DateRange(new Date('11/20/2022'), new Date('11/26/2022'))]\r\n  monthList = [\"January\", \"February\", \"March\", \"April\", \"May\", \"June\", \"July\", \"August\", \"September\", \"October\", \"November\", \"December\"];\r\n\r\n  constructor(private dateAdapter: DateAdapter<Date>, @Inject(MAT_DATE_FORMATS) private _dateFormats: MatDateFormats, @Optional()\r\n  @Inject(MAT_DATE_RANGE_SELECTION_STRATEGY)\r\n  private _rangeSelectionStrategy: MultiWeekRangeSelectionStrategy<any>) {\r\n    this.dateAdapter.setLocale(navigator.language);\r\n    //this._rangeSelectionStrategy.createPreview(new Date());\r\n    //this._onSelectedChange(new Date());\r\n  }\r\n\r\n  isSelected = (date: Date) => {\r\n    return this.selectedWeek.map((dateRange) => {\r\n      if (date.toISOString() === dateRange.start.toISOString()) {\r\n        return 'mat-calendar-body-range-start mat-calendar-body-in-range selected week'\r\n      }\r\n      else if (date.toISOString() === dateRange.end.toISOString()) {\r\n        return 'mat-calendar-body-range-end mat-calendar-body-in-range selected week'\r\n      }\r\n      else if(date >= dateRange.start && date <= dateRange.end) {\r\n        return 'mat-calendar-body-in-range selected week'\r\n      }\r\n      return ''\r\n    })\r\n  };\r\n\r\n  add = (arr: any[], range: any) => {\r\n    const start = arr.some(el => el.start.toISOString() === range.start.toISOString());\r\n    const end = arr.some(el => el.end.toISOString() === range.end.toISOString());\r\n    if (!start && !end) arr.push(range);\r\n    return arr;\r\n  }\r\n\r\n  _onSelectedChange(date: Date | null): void {\r\n    if (date) {\r\n      this._rangeSelectionStrategy.selectionFinished(date);\r\n      switch (date.getDay()) {\r\n        case 0: {\r\n          let start = this.dateAdapter.addCalendarDays(date, 0);\r\n          let end = this.dateAdapter.addCalendarDays(date, 6);\r\n          this.add(this.selectedWeek, new DateRange(start, end))\r\n          this.weekSelected = new DateRange(start, end);\r\n          this.calendar.updateTodaysDate();\r\n          return\r\n        }\r\n        case 1: {\r\n          let start = this.dateAdapter.addCalendarDays(date, -1);\r\n          let end = this.dateAdapter.addCalendarDays(date, 5);\r\n          this.add(this.selectedWeek, new DateRange(start, end))\r\n          this.weekSelected = new DateRange(start, end);\r\n          this.calendar.updateTodaysDate();\r\n          return\r\n        }\r\n        case 2: {\r\n          let start = this.dateAdapter.addCalendarDays(date, -2);\r\n          let end = this.dateAdapter.addCalendarDays(date, 4);\r\n          this.add(this.selectedWeek, new DateRange(start, end))\r\n          this.weekSelected = new DateRange(start, end);\r\n          this.calendar.updateTodaysDate();\r\n          return\r\n        }\r\n        case 3: {\r\n          let start = this.dateAdapter.addCalendarDays(date, -3);\r\n          let end = this.dateAdapter.addCalendarDays(date, 3);\r\n          this.add(this.selectedWeek, new DateRange(start, end))\r\n          this.weekSelected = new DateRange(start, end);\r\n          this.calendar.updateTodaysDate();\r\n          return\r\n        }\r\n        case 4: {\r\n          let start = this.dateAdapter.addCalendarDays(date, -4);\r\n          let end = this.dateAdapter.addCalendarDays(date, 2);\r\n          this.add(this.selectedWeek, new DateRange(start, end))\r\n          this.weekSelected = new DateRange(start, end);\r\n          this.calendar.updateTodaysDate();\r\n          return\r\n        }\r\n        case 5: {\r\n          let start = this.dateAdapter.addCalendarDays(date, -5);\r\n          let end = this.dateAdapter.addCalendarDays(date, 1);\r\n          this.add(this.selectedWeek, new DateRange(start, end))\r\n          this.weekSelected = new DateRange(start, end);\r\n          this.calendar.updateTodaysDate();\r\n          return\r\n        }\r\n        case 6: {\r\n          let start = this.dateAdapter.addCalendarDays(date, -6);\r\n          let end = this.dateAdapter.addCalendarDays(date, 0);\r\n          this.add(this.selectedWeek, new DateRange(start, end))\r\n          this.weekSelected = new DateRange(start, end);\r\n          this.calendar.updateTodaysDate();\r\n          return\r\n        }\r\n      }\r\n    }\r\n  }\r\n\r\n  ngAfterViewChecked(): void {\r\n    const circle1 = document.createElement('div');\r\n    circle1.className = 'circle';\r\n    const circle2 = document.createElement('div');\r\n    circle2.className = 'circle';\r\n    const today = document.querySelector(`[aria-label=\"${this.dateAdapter.format(new Date(), this._dateFormats.display.dateA11yLabel)}\"]`);\r\n    const oct4 = document.querySelector(`[aria-label=\"${this.dateAdapter.format(new Date(\"November 4, 2022\"), this._dateFormats.display.dateA11yLabel)}\"]`);\r\n    if (!today?.querySelector('.circle')) {\r\n      today?.appendChild(circle1);\r\n    }\r\n    if (!oct4?.querySelector('.circle')) {\r\n      oct4?.appendChild(circle2);\r\n    }\r\n  }\r\n\r\n}\r\n",
+            "constructorObj": {
+                "name": "constructor",
+                "description": "",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "args": [
+                    {
+                        "name": "_dateAdapter",
+                        "type": "DateAdapter<D>",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    }
+                ],
+                "line": 8,
+                "jsdoctags": [
+                    {
+                        "name": "_dateAdapter",
+                        "type": "DateAdapter<D>",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "text": "param"
+                        }
+                    }
+                ]
+            },
+            "type": "injectable"
+        },
+        {
             "name": "ProgressBarService",
             "id": "injectable-ProgressBarService-1de2f2de532cf4df6a34e8d3842e6d61771c930e9e8f34852723488e0754a210a6adc90ddce0bb69efea692702f8697a4a887529b1251931ee18c75ac76eba60",
             "file": "projects/progress-bar/src/lib/progress-bar.service.ts",
@@ -529,6 +529,133 @@
                 "deprecationMessage": "",
                 "args": [],
                 "line": 6
+            },
+            "type": "injectable"
+        },
+        {
+            "name": "WeekRangeSelectionStrategy",
+            "id": "injectable-WeekRangeSelectionStrategy-e0e3e5c5197a81282dfb28b48b655e979378737530725e9081cdb783a1551fd4734b5ec5375190e3292183ce90f3e3ee90ab928fcc7d324eb14d1c473d467beb",
+            "file": "projects/datepicker/src/lib/dateweekpicker.component.ts",
+            "properties": [],
+            "methods": [
+                {
+                    "name": "_createWeekRange",
+                    "args": [
+                        {
+                            "name": "date",
+                            "type": "any | null",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "DateRange<D>",
+                    "typeParameters": [],
+                    "line": 19,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "modifierKind": [
+                        121
+                    ],
+                    "jsdoctags": [
+                        {
+                            "name": "date",
+                            "type": "any | null",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "createPreview",
+                    "args": [
+                        {
+                            "name": "activeDate",
+                            "type": "D | null",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "DateRange<D>",
+                    "typeParameters": [],
+                    "line": 15,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "jsdoctags": [
+                        {
+                            "name": "activeDate",
+                            "type": "D | null",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "selectionFinished",
+                    "args": [
+                        {
+                            "name": "date",
+                            "type": "D | null",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "DateRange<D>",
+                    "typeParameters": [],
+                    "line": 11,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "jsdoctags": [
+                        {
+                            "name": "date",
+                            "type": "D | null",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "deprecated": false,
+            "deprecationMessage": "",
+            "description": "",
+            "rawdescription": "\n",
+            "sourceCode": "import { AfterViewChecked, Component, ViewEncapsulation, ViewChild, TemplateRef, Output, EventEmitter, Inject, Injectable, Optional } from '@angular/core';\r\nimport { DateRange, DefaultMatCalendarRangeStrategy, MatCalendar, MatDateRangeSelectionStrategy, MAT_DATE_RANGE_SELECTION_STRATEGY } from '@angular/material/datepicker';\r\nimport { DatepickerPanel } from './datepicker.directive';\r\nimport { DatepickerHeaderComponent } from './datepickerHeader.component';\r\nimport { DateAdapter, MatDateFormats, MAT_DATE_FORMATS } from '@angular/material/core';\r\n\r\n@Injectable()\r\nexport class WeekRangeSelectionStrategy<D> implements MatDateRangeSelectionStrategy<D> {\r\n  constructor(private _dateAdapter: DateAdapter<D>) { }\r\n\r\n  selectionFinished(date: D | null): DateRange<D> {\r\n    return this._createWeekRange(date);\r\n  }\r\n\r\n  createPreview(activeDate: D | null): DateRange<D> {\r\n    return this._createWeekRange(activeDate);\r\n  }\r\n\r\n  private _createWeekRange(date: any | null): DateRange<D> {\r\n    if (date) {\r\n      switch (date?.getDay()) {\r\n        case 0: {\r\n          let start = this._dateAdapter.addCalendarDays(date, 0);\r\n          let end = this._dateAdapter.addCalendarDays(date, 6);\r\n          return new DateRange(start, end);\r\n        }\r\n        case 1: {\r\n          let start = this._dateAdapter.addCalendarDays(date, -1);\r\n          let end = this._dateAdapter.addCalendarDays(date, 5);\r\n          return new DateRange(start, end);\r\n        }\r\n        case 2: {\r\n          let start = this._dateAdapter.addCalendarDays(date, -2);\r\n          let end = this._dateAdapter.addCalendarDays(date, 4);\r\n          return new DateRange(start, end);\r\n        }\r\n        case 3: {\r\n          let start = this._dateAdapter.addCalendarDays(date, -3);\r\n          let end = this._dateAdapter.addCalendarDays(date, 3);\r\n          return new DateRange(start, end);\r\n        }\r\n        case 4: {\r\n          let start = this._dateAdapter.addCalendarDays(date, -4);\r\n          let end = this._dateAdapter.addCalendarDays(date, 2);\r\n          return new DateRange(start, end);\r\n        }\r\n        case 5: {\r\n          let start = this._dateAdapter.addCalendarDays(date, -5);\r\n          let end = this._dateAdapter.addCalendarDays(date, 1);\r\n          return new DateRange(start, end);\r\n        }\r\n        case 6: {\r\n          let start = this._dateAdapter.addCalendarDays(date, -6);\r\n          let end = this._dateAdapter.addCalendarDays(date, 0);\r\n          return new DateRange(start, end);\r\n        }\r\n      }\r\n    }\r\n\r\n    return new DateRange<D>(null, null);\r\n  }\r\n}\r\n\r\n@Component({\r\n  selector: 'lib-weekpicker',\r\n  template: `\r\n      <div class=\"calendar-wrapper\">\r\n        <mat-calendar\r\n          (selectedChange)=\"_onSelectedChange($event)\"\r\n          [selected]=\"selectedWeek\"\r\n          [headerComponent]=\"customHeader\"\r\n          [dateClass]=\"isSelected\"\r\n          >\r\n        </mat-calendar>\r\n      </div>\r\n  `,\r\n  styleUrls: ['./datepicker.component.scss'],\r\n  encapsulation: ViewEncapsulation.None,\r\n})\r\nexport class WeekpickerComponent implements AfterViewChecked, DatepickerPanel {\r\n  @ViewChild(TemplateRef) templateRef!: TemplateRef<any>;\r\n  @Output() closed = new EventEmitter<void>();\r\n  selectedWeek!: DateRange<Date>;\r\n  @ViewChild(MatCalendar) calendar!: MatCalendar<Date>;\r\n  selectedDate!: Date;\r\n  calendarVisible = true;\r\n  customHeader = DatepickerHeaderComponent;\r\n  monthList = [\"January\", \"February\", \"March\", \"April\", \"May\", \"June\", \"July\", \"August\", \"September\", \"October\", \"November\", \"December\"];\r\n\r\n  constructor(private dateAdapter: DateAdapter<Date>, @Inject(MAT_DATE_FORMATS) private _dateFormats: MatDateFormats, @Optional()\r\n  @Inject(MAT_DATE_RANGE_SELECTION_STRATEGY)\r\n  private _rangeSelectionStrategy: WeekRangeSelectionStrategy<any>) {\r\n    this.dateAdapter.setLocale(navigator.language);\r\n    //this._rangeSelectionStrategy.createPreview(new Date());\r\n    //this._onSelectedChange(new Date());\r\n  }\r\n\r\n  isSelected = (date: Date) => {\r\n    if (this.selectedWeek?.start && this.selectedWeek?.end) {\r\n      if (date.toISOString() === this.selectedWeek.start.toISOString()) {\r\n        return 'mat-calendar-body-range-start mat-calendar-body-in-range selected week'\r\n      }\r\n      else if (date.toISOString() === this.selectedWeek.end.toISOString()) {\r\n        return 'mat-calendar-body-range-end mat-calendar-body-in-range selected week'\r\n      }\r\n      else if (date >= this.selectedWeek.start && date <= this.selectedWeek.end) {\r\n        return 'mat-calendar-body-in-range selected week'\r\n      }\r\n    }\r\n    return ''\r\n  }\r\n\r\n  _onSelectedChange(date: Date | null): void {\r\n    if (date) {\r\n      this._rangeSelectionStrategy.selectionFinished(date);\r\n      switch (date.getDay()) {\r\n        case 0: {\r\n          let start = this.dateAdapter.addCalendarDays(date, 0);\r\n          let end = this.dateAdapter.addCalendarDays(date, 6);\r\n          this.selectedWeek = new DateRange(start, end);\r\n          this.calendar.updateTodaysDate();\r\n          return\r\n        }\r\n        case 1: {\r\n          let start = this.dateAdapter.addCalendarDays(date, -1);\r\n          let end = this.dateAdapter.addCalendarDays(date, 5);\r\n          this.selectedWeek = new DateRange(start, end);\r\n          this.calendar.updateTodaysDate();\r\n          return\r\n        }\r\n        case 2: {\r\n          let start = this.dateAdapter.addCalendarDays(date, -2);\r\n          let end = this.dateAdapter.addCalendarDays(date, 4);\r\n          this.selectedWeek = new DateRange(start, end);\r\n          this.calendar.updateTodaysDate();\r\n          return\r\n        }\r\n        case 3: {\r\n          let start = this.dateAdapter.addCalendarDays(date, -3);\r\n          let end = this.dateAdapter.addCalendarDays(date, 3);\r\n          this.selectedWeek = new DateRange(start, end);\r\n          this.calendar.updateTodaysDate();\r\n          return\r\n        }\r\n        case 4: {\r\n          let start = this.dateAdapter.addCalendarDays(date, -4);\r\n          let end = this.dateAdapter.addCalendarDays(date, 2);\r\n          this.selectedWeek = new DateRange(start, end);\r\n          this.calendar.updateTodaysDate();\r\n          return\r\n        }\r\n        case 5: {\r\n          let start = this.dateAdapter.addCalendarDays(date, -5);\r\n          let end = this.dateAdapter.addCalendarDays(date, 1);\r\n          this.selectedWeek = new DateRange(start, end);\r\n          this.calendar.updateTodaysDate();\r\n          return\r\n        }\r\n        case 6: {\r\n          let start = this.dateAdapter.addCalendarDays(date, -6);\r\n          let end = this.dateAdapter.addCalendarDays(date, 0);\r\n          this.selectedWeek = new DateRange(start, end);\r\n          this.calendar.updateTodaysDate();\r\n          return\r\n        }\r\n      }\r\n    }\r\n  }\r\n\r\n  get SelectedRange() {\r\n    if (this.selectedWeek) {\r\n      return this.selectedWeek.start?.toLocaleDateString() + ' - ' + (this.selectedWeek.end ? this.selectedWeek.end?.toLocaleDateString() : '');\r\n    }\r\n    return '';\r\n  }\r\n\r\n  set SelectedRange(value: any) {\r\n    if (value) {\r\n      try {\r\n        this.selectedWeek = new DateRange(new Date(value.split('-')[0]), new Date(value.split('-')[1]));\r\n      } catch (e) { }\r\n    }\r\n  }\r\n\r\n  ngAfterViewChecked(): void {\r\n    const circle1 = document.createElement('div');\r\n    circle1.className = 'circle';\r\n    const circle2 = document.createElement('div');\r\n    circle2.className = 'circle';\r\n    const today = document.querySelector(`[aria-label=\"${this.dateAdapter.format(new Date(), this._dateFormats.display.dateA11yLabel)}\"]`);\r\n    const oct4 = document.querySelector(`[aria-label=\"${this.dateAdapter.format(new Date(\"November 4, 2022\"), this._dateFormats.display.dateA11yLabel)}\"]`);\r\n    if (!today?.querySelector('.circle')) {\r\n      today?.appendChild(circle1);\r\n    }\r\n    if (!oct4?.querySelector('.circle')) {\r\n      oct4?.appendChild(circle2);\r\n    }\r\n  }\r\n\r\n}\r\n",
+            "constructorObj": {
+                "name": "constructor",
+                "description": "",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "args": [
+                    {
+                        "name": "_dateAdapter",
+                        "type": "DateAdapter<D>",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    }
+                ],
+                "line": 8,
+                "jsdoctags": [
+                    {
+                        "name": "_dateAdapter",
+                        "type": "DateAdapter<D>",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "text": "param"
+                        }
+                    }
+                ]
             },
             "type": "injectable"
         }
@@ -1835,7 +1962,7 @@
         },
         {
             "name": "CalendarComponent",
-            "id": "component-CalendarComponent-bb9581f16876eb63bcf267221b67a279159e48438cce41c73d3449a0bd1530d872aaef52d025b98a263ac31eb2c871251966b13f8ad12ee71378f34b4e4c2808",
+            "id": "component-CalendarComponent-24fc68eb7ab7deaca3609da07d6c8be035416941d56b85efb834bfe7888da83b297168a342375dc2eaceef2be06f2908af23b19145019cbe6ab6ea66ba0aefd3",
             "file": "projects/datepicker/src/lib/calendar.component.ts",
             "encapsulation": [
                 "ViewEncapsulation.None"
@@ -2185,11 +2312,11 @@
             "description": "",
             "rawdescription": "\n",
             "type": "component",
-            "sourceCode": "import { AfterViewChecked, Component, ViewEncapsulation, ViewChild, Inject, forwardRef, HostBinding, Input } from '@angular/core';\r\nimport { DateAdapter, MatDateFormats, MAT_DATE_FORMATS } from '@angular/material/core';\r\nimport { DefaultMatCalendarRangeStrategy, MatCalendar, MAT_DATE_RANGE_SELECTION_STRATEGY } from '@angular/material/datepicker';\r\nimport { DatepickerHeaderComponent } from './datepickerHeader.component';\r\nimport { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';\r\n\r\n//[dateClass]=\"hideWeekends()\" [dateFilter]=\"disableWeekends\" (selectedChange)=\"onSelectedChange($event)\"\r\n\r\n@Component({\r\n    selector: 'lib-calendar',\r\n    template: `\r\n        <mat-calendar\r\n          [selected]=\"selectedDate\"\r\n          [headerComponent]=\"customHeader\"\r\n          (selectedChange)=\"select($event)\" \r\n          [dateClass]=\"isSelected\"\r\n          >\r\n        </mat-calendar>\r\n  `,\r\n    styleUrls: ['./datepicker.component.scss'],\r\n    encapsulation: ViewEncapsulation.None,\r\n    providers: [\r\n        {\r\n            provide: MAT_DATE_RANGE_SELECTION_STRATEGY,\r\n            useClass: DefaultMatCalendarRangeStrategy,\r\n        },\r\n        {\r\n            provide: NG_VALUE_ACCESSOR,\r\n            useExisting: forwardRef(() => CalendarComponent),\r\n            multi: true\r\n        }\r\n    ],\r\n})\r\nexport class CalendarComponent {\r\n    @ViewChild(MatCalendar) calendar!: MatCalendar<Date>;\r\n    @Input() name!: string;\r\n    selectedDate!: Date;\r\n    customHeader = DatepickerHeaderComponent;\r\n    monthList = [\"January\", \"February\", \"March\", \"April\", \"May\", \"June\", \"July\", \"August\", \"September\", \"October\", \"November\", \"December\"];\r\n    daysSelected: any[] = [];\r\n    event: any;\r\n    val: any;\r\n\r\n    constructor(private dateAdapter: DateAdapter<Date>, @Inject(MAT_DATE_FORMATS) private _dateFormats: MatDateFormats) {\r\n        this.dateAdapter.setLocale(navigator.language);\r\n        this.dateAdapter.getFirstDayOfWeek = () => { return 1; }\r\n        this.dateAdapter.getDayOfWeekNames = () => {\r\n            return ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sat'];\r\n        }\r\n        //this.dateAdapter.setLocale('ar-sa');\r\n        //this.dateAdapter.setLocale('zh-cn');\r\n        //this.dateAdapter.setLocale('he');\r\n    }\r\n\r\n    // hideWeekends() {\r\n    //     return (date: Date): MatCalendarCellCssClasses => {\r\n    //         return (date.getDay() === 6 || date.getDay() === 0) ? 'weekend' : '';\r\n    //     };\r\n    // } \r\n\r\n    select(selectedDate: Date | null) {\r\n        const index = this.daysSelected.findIndex(x => x == selectedDate);\r\n        if (index < 0) this.daysSelected.push(selectedDate);\r\n        else this.daysSelected.splice(index, 1);\r\n        this.calendar.updateTodaysDate();\r\n        this.value = this.daysSelected;\r\n    }\r\n\r\n    isSelected = (date: Date) => {\r\n        const formattedDate = date.getFullYear() +\r\n            \"-\" +\r\n            (\"00\" + (date.getMonth() + 1)).slice(-2) +\r\n            \"-\" +\r\n            (\"00\" + date.getDate()).slice(-2);\r\n        return this.daysSelected.find(x => x.getFullYear() + \"-\" + (\"00\" + (x.getMonth() + 1)).slice(-2) + \"-\" + (\"00\" + x.getDate()).slice(-2) == formattedDate) ? 'selected' : '';\r\n    };\r\n\r\n    disableWeekends = (d: Date): boolean => {\r\n        const day = d.getDay();\r\n        return day !== 0 && day !== 6;\r\n    }\r\n\r\n    onPreviousDay() {\r\n        this._addDays(-1);\r\n    }\r\n\r\n    onNextDay() {\r\n        this._addDays(1);\r\n    }\r\n\r\n    onSelectedChange(selectedDate: Date | null) {\r\n        if (selectedDate) {\r\n            this.selectedDate = selectedDate;\r\n        }\r\n    }\r\n\r\n    get SelectedDate() {\r\n        if (this.selectedDate) {\r\n            return this.selectedDate.toLocaleDateString();\r\n        }\r\n        else {\r\n            return ''\r\n        }\r\n    }\r\n\r\n    set SelectedDate(value: any) {\r\n        if (value) {\r\n            try {\r\n                this.selectedDate = new Date(value);\r\n            } catch (e) { }\r\n        }\r\n    }\r\n\r\n    private _addDays(days: number) {\r\n        this.selectedDate = new Date(\r\n            this.selectedDate.getFullYear(),\r\n            this.selectedDate.getMonth(),\r\n            this.selectedDate.getDate() + days\r\n        );\r\n\r\n        this.calendar._goToDateInView(this.selectedDate, 'month');\r\n    }\r\n\r\n    onChange: any = () => { }\r\n\r\n    onTouch: any = () => { }\r\n\r\n    set value(val: any) {\r\n        if (val) {\r\n            this.val = val;\r\n            this.onChange(val);\r\n            this.onTouch(val);\r\n        }\r\n    }\r\n\r\n    writeValue(value: any) {\r\n        this.value = value;\r\n    }\r\n\r\n    registerOnChange(fn: any) {\r\n        this.onChange = fn\r\n    }\r\n\r\n    registerOnTouched(fn: any) {\r\n        this.onTouch = fn\r\n    }\r\n\r\n}\r\n",
+            "sourceCode": "import { Component, ViewEncapsulation, ViewChild, Inject, forwardRef, Input } from '@angular/core';\r\nimport { DateAdapter, MatDateFormats, MAT_DATE_FORMATS } from '@angular/material/core';\r\nimport { DefaultMatCalendarRangeStrategy, MatCalendar, MAT_DATE_RANGE_SELECTION_STRATEGY } from '@angular/material/datepicker';\r\nimport { DatepickerHeaderComponent } from './datepickerHeader.component';\r\nimport { NG_VALUE_ACCESSOR } from '@angular/forms';\r\n\r\n//[dateClass]=\"hideWeekends()\" [dateFilter]=\"disableWeekends\" (selectedChange)=\"onSelectedChange($event)\"\r\n\r\n@Component({\r\n    selector: 'lib-calendar',\r\n    template: `\r\n        <mat-calendar\r\n          [selected]=\"selectedDate\"\r\n          [headerComponent]=\"customHeader\"\r\n          (selectedChange)=\"select($event)\" \r\n          [dateClass]=\"isSelected\"\r\n          >\r\n        </mat-calendar>\r\n  `,\r\n    styleUrls: ['./datepicker.component.scss'],\r\n    encapsulation: ViewEncapsulation.None,\r\n    providers: [\r\n        {\r\n            provide: MAT_DATE_RANGE_SELECTION_STRATEGY,\r\n            useClass: DefaultMatCalendarRangeStrategy,\r\n        },\r\n        {\r\n            provide: NG_VALUE_ACCESSOR,\r\n            useExisting: forwardRef(() => CalendarComponent),\r\n            multi: true\r\n        }\r\n    ],\r\n})\r\nexport class CalendarComponent {\r\n    @ViewChild(MatCalendar) calendar!: MatCalendar<Date>;\r\n    @Input() name!: string;\r\n    selectedDate!: Date;\r\n    customHeader = DatepickerHeaderComponent;\r\n    monthList = [\"January\", \"February\", \"March\", \"April\", \"May\", \"June\", \"July\", \"August\", \"September\", \"October\", \"November\", \"December\"];\r\n    daysSelected: any[] = [];\r\n    event: any;\r\n    val: any;\r\n\r\n    constructor(private dateAdapter: DateAdapter<Date>, @Inject(MAT_DATE_FORMATS) private _dateFormats: MatDateFormats) {\r\n        this.dateAdapter.setLocale(navigator.language);\r\n        this.dateAdapter.getFirstDayOfWeek = () => { return 1; }\r\n        this.dateAdapter.getDayOfWeekNames = () => {\r\n            return ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sat'];\r\n        }\r\n        //this.dateAdapter.setLocale('ar-sa');\r\n        //this.dateAdapter.setLocale('zh-cn');\r\n        //this.dateAdapter.setLocale('he');\r\n    }\r\n\r\n    // hideWeekends() {\r\n    //     return (date: Date): MatCalendarCellCssClasses => {\r\n    //         return (date.getDay() === 6 || date.getDay() === 0) ? 'weekend' : '';\r\n    //     };\r\n    // } \r\n\r\n    select(selectedDate: Date | null) {\r\n        const index = this.daysSelected.findIndex(x => x == selectedDate);\r\n        if (index < 0) this.daysSelected.push(selectedDate);\r\n        else this.daysSelected.splice(index, 1);\r\n        this.calendar.updateTodaysDate();\r\n        this.value = this.daysSelected;\r\n    }\r\n\r\n    isSelected = (date: Date) => {\r\n        const formattedDate = date.getFullYear() +\r\n            \"-\" +\r\n            (\"00\" + (date.getMonth() + 1)).slice(-2) +\r\n            \"-\" +\r\n            (\"00\" + date.getDate()).slice(-2);\r\n        return this.daysSelected.find(x => x.getFullYear() + \"-\" + (\"00\" + (x.getMonth() + 1)).slice(-2) + \"-\" + (\"00\" + x.getDate()).slice(-2) == formattedDate) ? 'selected' : '';\r\n    };\r\n\r\n    disableWeekends = (d: Date): boolean => {\r\n        const day = d.getDay();\r\n        return day !== 0 && day !== 6;\r\n    }\r\n\r\n    onPreviousDay() {\r\n        this._addDays(-1);\r\n    }\r\n\r\n    onNextDay() {\r\n        this._addDays(1);\r\n    }\r\n\r\n    onSelectedChange(selectedDate: Date | null) {\r\n        if (selectedDate) {\r\n            this.selectedDate = selectedDate;\r\n        }\r\n    }\r\n\r\n    get SelectedDate() {\r\n        if (this.selectedDate) {\r\n            return this.selectedDate.toLocaleDateString();\r\n        }\r\n        else {\r\n            return ''\r\n        }\r\n    }\r\n\r\n    set SelectedDate(value: any) {\r\n        if (value) {\r\n            try {\r\n                this.selectedDate = new Date(value);\r\n            } catch (e) { }\r\n        }\r\n    }\r\n\r\n    private _addDays(days: number) {\r\n        this.selectedDate = new Date(\r\n            this.selectedDate.getFullYear(),\r\n            this.selectedDate.getMonth(),\r\n            this.selectedDate.getDate() + days\r\n        );\r\n\r\n        this.calendar._goToDateInView(this.selectedDate, 'month');\r\n    }\r\n\r\n    onChange: any = () => { }\r\n\r\n    onTouch: any = () => { }\r\n\r\n    set value(val: any) {\r\n        if (val) {\r\n            this.val = val;\r\n            this.onChange(val);\r\n            this.onTouch(val);\r\n        }\r\n    }\r\n\r\n    writeValue(value: any) {\r\n        this.value = value;\r\n    }\r\n\r\n    registerOnChange(fn: any) {\r\n        this.onChange = fn\r\n    }\r\n\r\n    registerOnTouched(fn: any) {\r\n        this.onTouch = fn\r\n    }\r\n\r\n}\r\n",
             "assetsDirs": [],
             "styleUrlsData": [
                 {
-                    "data": ".calendar-wrapper {\r\n    width: 296px;\r\n    background: #ffffff;\r\n    border: 1px solid #d2d8db;\r\n    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.24);\r\n    border-radius: 4px;\r\n}\r\n.mat-calendar-body {\r\n    font-weight: 400;\r\n    font-size: 13px;\r\n    line-height: 120%;\r\n}\r\n.circle {\r\n    position: relative;\r\n    width: 5px;\r\n    height: 5px;\r\n    border-radius: 50%;\r\n    top: 13px;\r\n    z-index: 1;\r\n    left: calc(50% - 5px / 2);\r\n}\r\n.mat-calendar-body-cell:not(.mat-calendar-body-disabled):hover\r\n    > .mat-calendar-body-cell-content:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical) {\r\n    background-color: #dbe6f0;\r\n}\r\n.mat-calendar-body-cell-content {\r\n    flex-direction: column;\r\n    & ~ .circle {\r\n        background: #005c99;\r\n    }\r\n}\r\n.mat-calendar-body-label {\r\n    opacity: 0;\r\n    &[colspan=\"7\"] {\r\n        display: none;\r\n    }\r\n}\r\n.mat-calendar-body-selected {\r\n    background-color: #005c99;\r\n    font-weight: 700;\r\n    font-size: 14px;\r\n    line-height: 130%;\r\n    &:hover {\r\n        background-color: #003d7a;\r\n    }\r\n    & ~ .circle {\r\n        background: #fff;\r\n    }\r\n}\r\n\r\n.mat-calendar-body-today:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical) {\r\n    border: none;\r\n    background: #ecf3f8;\r\n}\r\n.mat-calendar-body-today.mat-calendar-body-selected {\r\n    box-shadow: none;\r\n}\r\n.mat-calendar-table-header-divider {\r\n    display: none;\r\n}\r\n.mat-calendar-body-in-range::before {\r\n    background: #ecf3f8;\r\n}\r\n.mat-calendar-body-cell-container[data-mat-col=\"6\"] {\r\n    .mat-calendar-body-in-range::before {\r\n        width: 95%;\r\n        border-top-right-radius: 999px;\r\n        border-bottom-right-radius: 999px;\r\n    }\r\n}\r\n.mat-calendar-body-cell-container[data-mat-col=\"0\"] {\r\n    .mat-calendar-body-in-range::before {\r\n        left: 5%;\r\n        width: 95%;\r\n        border-top-left-radius: 999px;\r\n        border-bottom-left-radius: 999px;\r\n    }\r\n}\r\nsvg {\r\n    right: 30px;\r\n    font-size: 20px;\r\n    line-height: 40px;\r\n    cursor: pointer;\r\n    z-index: 1;\r\n}\r\n.calendar-svg {\r\n    background: url(./calendar.svg) no-repeat 98% center;\r\n    border-radius: 2px;\r\n    border: 1px solid #ccc;\r\n    height: 25px;\r\n    padding: 5px;\r\n    width: 250px;\r\n    cursor: pointer;\r\n}\r\n.mat-calendar-table-header {\r\n    span {\r\n        font-style: normal;\r\n        font-weight: 700;\r\n        font-size: 14px;\r\n        line-height: 130%;\r\n        color: #333333;\r\n    }\r\n}\r\n\r\n.selected {\r\n    .mat-calendar-body-cell-content {\r\n        border-radius: 50%;\r\n        background-color: #005c99;\r\n        font-weight: 700;\r\n        font-size: 14px;\r\n        line-height: 130%;\r\n        color: #ffffff;\r\n        &:hover {\r\n            background-color: #003d7a !important;\r\n        }\r\n    }\r\n    &:hover {\r\n        .mat-calendar-body-cell-content {\r\n            background-color: #003d7a !important;\r\n        }\r\n    }\r\n}\r\n\r\n.mat-calendar-body-cell.red {\r\n    background: red;\r\n}\r\n\r\n// .mat-calendar-table-header th:not(.mat-calendar-table-header-divider):nth-last-child(2),\r\n// .mat-calendar-table-header th:not(.mat-calendar-table-header-divider):last-child,\r\n// .mat-calendar-body-cell-container:has(> .mat-calendar-body-cell.weekend) {\r\n//     display: none;\r\n// }\r\n",
+                    "data": ".calendar-wrapper {\r\n    width: 296px;\r\n    background: #ffffff;\r\n    border: 1px solid #d2d8db;\r\n    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.24);\r\n    border-radius: 4px;\r\n}\r\n.mat-calendar-body {\r\n    font-weight: 400;\r\n    font-size: 13px;\r\n    line-height: 120%;\r\n}\r\n.circle {\r\n    position: relative;\r\n    width: 5px;\r\n    height: 5px;\r\n    border-radius: 50%;\r\n    top: 13px;\r\n    z-index: 1;\r\n    left: calc(50% - 5px / 2);\r\n}\r\n.mat-calendar-body-cell:not(.mat-calendar-body-disabled):hover\r\n    > .mat-calendar-body-cell-content:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical) {\r\n    background-color: #dbe6f0;\r\n}\r\n.mat-calendar-body-cell-content {\r\n    flex-direction: column;\r\n    & ~ .circle {\r\n        background: #005c99;\r\n    }\r\n}\r\n.mat-calendar-body-label {\r\n    opacity: 0;\r\n    &[colspan=\"7\"] {\r\n        display: none;\r\n    }\r\n}\r\n.mat-calendar-body-selected {\r\n    background-color: #005c99;\r\n    font-weight: 700;\r\n    font-size: 14px;\r\n    line-height: 130%;\r\n    &:hover {\r\n        background-color: #003d7a;\r\n    }\r\n    & ~ .circle {\r\n        background: #fff;\r\n    }\r\n}\r\n\r\n.mat-calendar-body-today:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical) {\r\n    border: none;\r\n    background: #ecf3f8;\r\n}\r\n.mat-calendar-body-today.mat-calendar-body-selected {\r\n    box-shadow: none;\r\n}\r\n.mat-calendar-table-header-divider {\r\n    display: none;\r\n}\r\n.mat-calendar-body-in-range::before {\r\n    background: #ecf3f8;\r\n}\r\n.mat-calendar-body-cell-container[data-mat-col=\"6\"] {\r\n    .mat-calendar-body-in-range::before {\r\n        width: 95%;\r\n        border-top-right-radius: 999px;\r\n        border-bottom-right-radius: 999px;\r\n    }\r\n}\r\n.mat-calendar-body-cell-container[data-mat-col=\"0\"] {\r\n    .mat-calendar-body-in-range::before {\r\n        left: 5%;\r\n        width: 95%;\r\n        border-top-left-radius: 999px;\r\n        border-bottom-left-radius: 999px;\r\n    }\r\n}\r\nsvg {\r\n    right: 30px;\r\n    font-size: 20px;\r\n    line-height: 40px;\r\n    cursor: pointer;\r\n    z-index: 1;\r\n}\r\n.calendar-svg {\r\n    background: url(./calendar.svg) no-repeat 98% center;\r\n    border-radius: 2px;\r\n    border: 1px solid #ccc;\r\n    height: 25px;\r\n    padding: 5px;\r\n    width: 250px;\r\n    cursor: pointer;\r\n}\r\n.mat-calendar-table-header {\r\n    span {\r\n        font-style: normal;\r\n        font-weight: 700;\r\n        font-size: 14px;\r\n        line-height: 130%;\r\n        color: #333333;\r\n    }\r\n}\r\n\r\n.selected {\r\n    .mat-calendar-body-cell-content {\r\n        border-radius: 50%;\r\n        background-color: #005c99;\r\n        font-weight: 700;\r\n        font-size: 14px;\r\n        line-height: 130%;\r\n        color: #ffffff;\r\n        &:hover {\r\n            background-color: #003d7a;\r\n        }\r\n    }\r\n    &:hover {\r\n        .mat-calendar-body-cell-content {\r\n            background-color: #003d7a;\r\n        }\r\n    }\r\n}\r\n\r\n.mat-calendar-body-cell.red {\r\n    background: red;\r\n}\r\n\r\n.week {\r\n    .mat-calendar-body-cell-content {\r\n        color: #ffffff;\r\n    }\r\n    &::before {\r\n        background: #005c99;\r\n    }\r\n    .mat-calendar-body-today:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical) {\r\n        background: #005c99;\r\n    }\r\n}\r\n.week:not(.mat-calendar-body-disabled):hover\r\n    > .mat-calendar-body-cell-content:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical) {\r\n    background: #003d7a;\r\n}\r\n\r\n// .mat-calendar-table-header th:not(.mat-calendar-table-header-divider):nth-last-child(2),\r\n// .mat-calendar-table-header th:not(.mat-calendar-table-header-divider):last-child,\r\n// .mat-calendar-body-cell-container:has(> .mat-calendar-body-cell.weekend) {\r\n//     display: none;\r\n// }\r\n",
                     "styleUrl": "./datepicker.component.scss"
                 }
             ],
@@ -2860,7 +2987,7 @@
             "assetsDirs": [],
             "styleUrlsData": [
                 {
-                    "data": ".calendar-wrapper {\r\n    width: 296px;\r\n    background: #ffffff;\r\n    border: 1px solid #d2d8db;\r\n    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.24);\r\n    border-radius: 4px;\r\n}\r\n.mat-calendar-body {\r\n    font-weight: 400;\r\n    font-size: 13px;\r\n    line-height: 120%;\r\n}\r\n.circle {\r\n    position: relative;\r\n    width: 5px;\r\n    height: 5px;\r\n    border-radius: 50%;\r\n    top: 13px;\r\n    z-index: 1;\r\n    left: calc(50% - 5px / 2);\r\n}\r\n.mat-calendar-body-cell:not(.mat-calendar-body-disabled):hover\r\n    > .mat-calendar-body-cell-content:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical) {\r\n    background-color: #dbe6f0;\r\n}\r\n.mat-calendar-body-cell-content {\r\n    flex-direction: column;\r\n    & ~ .circle {\r\n        background: #005c99;\r\n    }\r\n}\r\n.mat-calendar-body-label {\r\n    opacity: 0;\r\n    &[colspan=\"7\"] {\r\n        display: none;\r\n    }\r\n}\r\n.mat-calendar-body-selected {\r\n    background-color: #005c99;\r\n    font-weight: 700;\r\n    font-size: 14px;\r\n    line-height: 130%;\r\n    &:hover {\r\n        background-color: #003d7a;\r\n    }\r\n    & ~ .circle {\r\n        background: #fff;\r\n    }\r\n}\r\n\r\n.mat-calendar-body-today:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical) {\r\n    border: none;\r\n    background: #ecf3f8;\r\n}\r\n.mat-calendar-body-today.mat-calendar-body-selected {\r\n    box-shadow: none;\r\n}\r\n.mat-calendar-table-header-divider {\r\n    display: none;\r\n}\r\n.mat-calendar-body-in-range::before {\r\n    background: #ecf3f8;\r\n}\r\n.mat-calendar-body-cell-container[data-mat-col=\"6\"] {\r\n    .mat-calendar-body-in-range::before {\r\n        width: 95%;\r\n        border-top-right-radius: 999px;\r\n        border-bottom-right-radius: 999px;\r\n    }\r\n}\r\n.mat-calendar-body-cell-container[data-mat-col=\"0\"] {\r\n    .mat-calendar-body-in-range::before {\r\n        left: 5%;\r\n        width: 95%;\r\n        border-top-left-radius: 999px;\r\n        border-bottom-left-radius: 999px;\r\n    }\r\n}\r\nsvg {\r\n    right: 30px;\r\n    font-size: 20px;\r\n    line-height: 40px;\r\n    cursor: pointer;\r\n    z-index: 1;\r\n}\r\n.calendar-svg {\r\n    background: url(./calendar.svg) no-repeat 98% center;\r\n    border-radius: 2px;\r\n    border: 1px solid #ccc;\r\n    height: 25px;\r\n    padding: 5px;\r\n    width: 250px;\r\n    cursor: pointer;\r\n}\r\n.mat-calendar-table-header {\r\n    span {\r\n        font-style: normal;\r\n        font-weight: 700;\r\n        font-size: 14px;\r\n        line-height: 130%;\r\n        color: #333333;\r\n    }\r\n}\r\n\r\n.selected {\r\n    .mat-calendar-body-cell-content {\r\n        border-radius: 50%;\r\n        background-color: #005c99;\r\n        font-weight: 700;\r\n        font-size: 14px;\r\n        line-height: 130%;\r\n        color: #ffffff;\r\n        &:hover {\r\n            background-color: #003d7a !important;\r\n        }\r\n    }\r\n    &:hover {\r\n        .mat-calendar-body-cell-content {\r\n            background-color: #003d7a !important;\r\n        }\r\n    }\r\n}\r\n\r\n.mat-calendar-body-cell.red {\r\n    background: red;\r\n}\r\n\r\n// .mat-calendar-table-header th:not(.mat-calendar-table-header-divider):nth-last-child(2),\r\n// .mat-calendar-table-header th:not(.mat-calendar-table-header-divider):last-child,\r\n// .mat-calendar-body-cell-container:has(> .mat-calendar-body-cell.weekend) {\r\n//     display: none;\r\n// }\r\n",
+                    "data": ".calendar-wrapper {\r\n    width: 296px;\r\n    background: #ffffff;\r\n    border: 1px solid #d2d8db;\r\n    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.24);\r\n    border-radius: 4px;\r\n}\r\n.mat-calendar-body {\r\n    font-weight: 400;\r\n    font-size: 13px;\r\n    line-height: 120%;\r\n}\r\n.circle {\r\n    position: relative;\r\n    width: 5px;\r\n    height: 5px;\r\n    border-radius: 50%;\r\n    top: 13px;\r\n    z-index: 1;\r\n    left: calc(50% - 5px / 2);\r\n}\r\n.mat-calendar-body-cell:not(.mat-calendar-body-disabled):hover\r\n    > .mat-calendar-body-cell-content:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical) {\r\n    background-color: #dbe6f0;\r\n}\r\n.mat-calendar-body-cell-content {\r\n    flex-direction: column;\r\n    & ~ .circle {\r\n        background: #005c99;\r\n    }\r\n}\r\n.mat-calendar-body-label {\r\n    opacity: 0;\r\n    &[colspan=\"7\"] {\r\n        display: none;\r\n    }\r\n}\r\n.mat-calendar-body-selected {\r\n    background-color: #005c99;\r\n    font-weight: 700;\r\n    font-size: 14px;\r\n    line-height: 130%;\r\n    &:hover {\r\n        background-color: #003d7a;\r\n    }\r\n    & ~ .circle {\r\n        background: #fff;\r\n    }\r\n}\r\n\r\n.mat-calendar-body-today:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical) {\r\n    border: none;\r\n    background: #ecf3f8;\r\n}\r\n.mat-calendar-body-today.mat-calendar-body-selected {\r\n    box-shadow: none;\r\n}\r\n.mat-calendar-table-header-divider {\r\n    display: none;\r\n}\r\n.mat-calendar-body-in-range::before {\r\n    background: #ecf3f8;\r\n}\r\n.mat-calendar-body-cell-container[data-mat-col=\"6\"] {\r\n    .mat-calendar-body-in-range::before {\r\n        width: 95%;\r\n        border-top-right-radius: 999px;\r\n        border-bottom-right-radius: 999px;\r\n    }\r\n}\r\n.mat-calendar-body-cell-container[data-mat-col=\"0\"] {\r\n    .mat-calendar-body-in-range::before {\r\n        left: 5%;\r\n        width: 95%;\r\n        border-top-left-radius: 999px;\r\n        border-bottom-left-radius: 999px;\r\n    }\r\n}\r\nsvg {\r\n    right: 30px;\r\n    font-size: 20px;\r\n    line-height: 40px;\r\n    cursor: pointer;\r\n    z-index: 1;\r\n}\r\n.calendar-svg {\r\n    background: url(./calendar.svg) no-repeat 98% center;\r\n    border-radius: 2px;\r\n    border: 1px solid #ccc;\r\n    height: 25px;\r\n    padding: 5px;\r\n    width: 250px;\r\n    cursor: pointer;\r\n}\r\n.mat-calendar-table-header {\r\n    span {\r\n        font-style: normal;\r\n        font-weight: 700;\r\n        font-size: 14px;\r\n        line-height: 130%;\r\n        color: #333333;\r\n    }\r\n}\r\n\r\n.selected {\r\n    .mat-calendar-body-cell-content {\r\n        border-radius: 50%;\r\n        background-color: #005c99;\r\n        font-weight: 700;\r\n        font-size: 14px;\r\n        line-height: 130%;\r\n        color: #ffffff;\r\n        &:hover {\r\n            background-color: #003d7a;\r\n        }\r\n    }\r\n    &:hover {\r\n        .mat-calendar-body-cell-content {\r\n            background-color: #003d7a;\r\n        }\r\n    }\r\n}\r\n\r\n.mat-calendar-body-cell.red {\r\n    background: red;\r\n}\r\n\r\n.week {\r\n    .mat-calendar-body-cell-content {\r\n        color: #ffffff;\r\n    }\r\n    &::before {\r\n        background: #005c99;\r\n    }\r\n    .mat-calendar-body-today:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical) {\r\n        background: #005c99;\r\n    }\r\n}\r\n.week:not(.mat-calendar-body-disabled):hover\r\n    > .mat-calendar-body-cell-content:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical) {\r\n    background: #003d7a;\r\n}\r\n\r\n// .mat-calendar-table-header th:not(.mat-calendar-table-header-divider):nth-last-child(2),\r\n// .mat-calendar-table-header th:not(.mat-calendar-table-header-divider):last-child,\r\n// .mat-calendar-body-cell-container:has(> .mat-calendar-body-cell.weekend) {\r\n//     display: none;\r\n// }\r\n",
                     "styleUrl": "./datepicker.component.scss"
                 }
             ],
@@ -3555,7 +3682,7 @@
             "assetsDirs": [],
             "styleUrlsData": [
                 {
-                    "data": ".calendar-wrapper {\r\n    width: 296px;\r\n    background: #ffffff;\r\n    border: 1px solid #d2d8db;\r\n    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.24);\r\n    border-radius: 4px;\r\n}\r\n.mat-calendar-body {\r\n    font-weight: 400;\r\n    font-size: 13px;\r\n    line-height: 120%;\r\n}\r\n.circle {\r\n    position: relative;\r\n    width: 5px;\r\n    height: 5px;\r\n    border-radius: 50%;\r\n    top: 13px;\r\n    z-index: 1;\r\n    left: calc(50% - 5px / 2);\r\n}\r\n.mat-calendar-body-cell:not(.mat-calendar-body-disabled):hover\r\n    > .mat-calendar-body-cell-content:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical) {\r\n    background-color: #dbe6f0;\r\n}\r\n.mat-calendar-body-cell-content {\r\n    flex-direction: column;\r\n    & ~ .circle {\r\n        background: #005c99;\r\n    }\r\n}\r\n.mat-calendar-body-label {\r\n    opacity: 0;\r\n    &[colspan=\"7\"] {\r\n        display: none;\r\n    }\r\n}\r\n.mat-calendar-body-selected {\r\n    background-color: #005c99;\r\n    font-weight: 700;\r\n    font-size: 14px;\r\n    line-height: 130%;\r\n    &:hover {\r\n        background-color: #003d7a;\r\n    }\r\n    & ~ .circle {\r\n        background: #fff;\r\n    }\r\n}\r\n\r\n.mat-calendar-body-today:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical) {\r\n    border: none;\r\n    background: #ecf3f8;\r\n}\r\n.mat-calendar-body-today.mat-calendar-body-selected {\r\n    box-shadow: none;\r\n}\r\n.mat-calendar-table-header-divider {\r\n    display: none;\r\n}\r\n.mat-calendar-body-in-range::before {\r\n    background: #ecf3f8;\r\n}\r\n.mat-calendar-body-cell-container[data-mat-col=\"6\"] {\r\n    .mat-calendar-body-in-range::before {\r\n        width: 95%;\r\n        border-top-right-radius: 999px;\r\n        border-bottom-right-radius: 999px;\r\n    }\r\n}\r\n.mat-calendar-body-cell-container[data-mat-col=\"0\"] {\r\n    .mat-calendar-body-in-range::before {\r\n        left: 5%;\r\n        width: 95%;\r\n        border-top-left-radius: 999px;\r\n        border-bottom-left-radius: 999px;\r\n    }\r\n}\r\nsvg {\r\n    right: 30px;\r\n    font-size: 20px;\r\n    line-height: 40px;\r\n    cursor: pointer;\r\n    z-index: 1;\r\n}\r\n.calendar-svg {\r\n    background: url(./calendar.svg) no-repeat 98% center;\r\n    border-radius: 2px;\r\n    border: 1px solid #ccc;\r\n    height: 25px;\r\n    padding: 5px;\r\n    width: 250px;\r\n    cursor: pointer;\r\n}\r\n.mat-calendar-table-header {\r\n    span {\r\n        font-style: normal;\r\n        font-weight: 700;\r\n        font-size: 14px;\r\n        line-height: 130%;\r\n        color: #333333;\r\n    }\r\n}\r\n\r\n.selected {\r\n    .mat-calendar-body-cell-content {\r\n        border-radius: 50%;\r\n        background-color: #005c99;\r\n        font-weight: 700;\r\n        font-size: 14px;\r\n        line-height: 130%;\r\n        color: #ffffff;\r\n        &:hover {\r\n            background-color: #003d7a !important;\r\n        }\r\n    }\r\n    &:hover {\r\n        .mat-calendar-body-cell-content {\r\n            background-color: #003d7a !important;\r\n        }\r\n    }\r\n}\r\n\r\n.mat-calendar-body-cell.red {\r\n    background: red;\r\n}\r\n\r\n// .mat-calendar-table-header th:not(.mat-calendar-table-header-divider):nth-last-child(2),\r\n// .mat-calendar-table-header th:not(.mat-calendar-table-header-divider):last-child,\r\n// .mat-calendar-body-cell-container:has(> .mat-calendar-body-cell.weekend) {\r\n//     display: none;\r\n// }\r\n",
+                    "data": ".calendar-wrapper {\r\n    width: 296px;\r\n    background: #ffffff;\r\n    border: 1px solid #d2d8db;\r\n    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.24);\r\n    border-radius: 4px;\r\n}\r\n.mat-calendar-body {\r\n    font-weight: 400;\r\n    font-size: 13px;\r\n    line-height: 120%;\r\n}\r\n.circle {\r\n    position: relative;\r\n    width: 5px;\r\n    height: 5px;\r\n    border-radius: 50%;\r\n    top: 13px;\r\n    z-index: 1;\r\n    left: calc(50% - 5px / 2);\r\n}\r\n.mat-calendar-body-cell:not(.mat-calendar-body-disabled):hover\r\n    > .mat-calendar-body-cell-content:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical) {\r\n    background-color: #dbe6f0;\r\n}\r\n.mat-calendar-body-cell-content {\r\n    flex-direction: column;\r\n    & ~ .circle {\r\n        background: #005c99;\r\n    }\r\n}\r\n.mat-calendar-body-label {\r\n    opacity: 0;\r\n    &[colspan=\"7\"] {\r\n        display: none;\r\n    }\r\n}\r\n.mat-calendar-body-selected {\r\n    background-color: #005c99;\r\n    font-weight: 700;\r\n    font-size: 14px;\r\n    line-height: 130%;\r\n    &:hover {\r\n        background-color: #003d7a;\r\n    }\r\n    & ~ .circle {\r\n        background: #fff;\r\n    }\r\n}\r\n\r\n.mat-calendar-body-today:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical) {\r\n    border: none;\r\n    background: #ecf3f8;\r\n}\r\n.mat-calendar-body-today.mat-calendar-body-selected {\r\n    box-shadow: none;\r\n}\r\n.mat-calendar-table-header-divider {\r\n    display: none;\r\n}\r\n.mat-calendar-body-in-range::before {\r\n    background: #ecf3f8;\r\n}\r\n.mat-calendar-body-cell-container[data-mat-col=\"6\"] {\r\n    .mat-calendar-body-in-range::before {\r\n        width: 95%;\r\n        border-top-right-radius: 999px;\r\n        border-bottom-right-radius: 999px;\r\n    }\r\n}\r\n.mat-calendar-body-cell-container[data-mat-col=\"0\"] {\r\n    .mat-calendar-body-in-range::before {\r\n        left: 5%;\r\n        width: 95%;\r\n        border-top-left-radius: 999px;\r\n        border-bottom-left-radius: 999px;\r\n    }\r\n}\r\nsvg {\r\n    right: 30px;\r\n    font-size: 20px;\r\n    line-height: 40px;\r\n    cursor: pointer;\r\n    z-index: 1;\r\n}\r\n.calendar-svg {\r\n    background: url(./calendar.svg) no-repeat 98% center;\r\n    border-radius: 2px;\r\n    border: 1px solid #ccc;\r\n    height: 25px;\r\n    padding: 5px;\r\n    width: 250px;\r\n    cursor: pointer;\r\n}\r\n.mat-calendar-table-header {\r\n    span {\r\n        font-style: normal;\r\n        font-weight: 700;\r\n        font-size: 14px;\r\n        line-height: 130%;\r\n        color: #333333;\r\n    }\r\n}\r\n\r\n.selected {\r\n    .mat-calendar-body-cell-content {\r\n        border-radius: 50%;\r\n        background-color: #005c99;\r\n        font-weight: 700;\r\n        font-size: 14px;\r\n        line-height: 130%;\r\n        color: #ffffff;\r\n        &:hover {\r\n            background-color: #003d7a;\r\n        }\r\n    }\r\n    &:hover {\r\n        .mat-calendar-body-cell-content {\r\n            background-color: #003d7a;\r\n        }\r\n    }\r\n}\r\n\r\n.mat-calendar-body-cell.red {\r\n    background: red;\r\n}\r\n\r\n.week {\r\n    .mat-calendar-body-cell-content {\r\n        color: #ffffff;\r\n    }\r\n    &::before {\r\n        background: #005c99;\r\n    }\r\n    .mat-calendar-body-today:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical) {\r\n        background: #005c99;\r\n    }\r\n}\r\n.week:not(.mat-calendar-body-disabled):hover\r\n    > .mat-calendar-body-cell-content:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical) {\r\n    background: #003d7a;\r\n}\r\n\r\n// .mat-calendar-table-header th:not(.mat-calendar-table-header-divider):nth-last-child(2),\r\n// .mat-calendar-table-header th:not(.mat-calendar-table-header-divider):last-child,\r\n// .mat-calendar-body-cell-container:has(> .mat-calendar-body-cell.weekend) {\r\n//     display: none;\r\n// }\r\n",
                     "styleUrl": "./datepicker.component.scss"
                 }
             ],
@@ -4401,6 +4528,273 @@
             ]
         },
         {
+            "name": "MultiweekpickerComponent",
+            "id": "component-MultiweekpickerComponent-78266da570a000536ff4c24058aa5fa792ae363e8d2f2a92e9b81c9c31fa6d16c5d5bce449d6b9b9994599557a392a98bc44d1c969b587ac1bf3edc9feacdf8f",
+            "file": "projects/datepicker/src/lib/multiWeekPicker.component.ts",
+            "encapsulation": [
+                "ViewEncapsulation.None"
+            ],
+            "entryComponents": [],
+            "inputs": [],
+            "outputs": [],
+            "providers": [],
+            "selector": "lib-multiweekpicker",
+            "styleUrls": [
+                "./datepicker.component.scss"
+            ],
+            "styles": [],
+            "template": "<div class=\"calendar-wrapper\">\n  <mat-calendar\n    (selectedChange)=\"_onSelectedChange($event)\"\n    [headerComponent]=\"customHeader\"\n    [dateClass]=\"isSelected\"\n    [selected]=\"weekSelected\"\n    >\n  </mat-calendar>\n</div>\n",
+            "templateUrl": [],
+            "viewProviders": [],
+            "inputsClass": [],
+            "outputsClass": [
+                {
+                    "name": "closed",
+                    "defaultValue": "new EventEmitter<void>()",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "line": 82,
+                    "type": "EventEmitter"
+                }
+            ],
+            "propertiesClass": [
+                {
+                    "name": "add",
+                    "defaultValue": "() => {...}",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 115
+                },
+                {
+                    "name": "calendar",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "MatCalendar<Date>",
+                    "optional": false,
+                    "description": "",
+                    "line": 84,
+                    "decorators": [
+                        {
+                            "name": "ViewChild",
+                            "stringifiedArguments": "MatCalendar"
+                        }
+                    ]
+                },
+                {
+                    "name": "calendarVisible",
+                    "defaultValue": "true",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 86
+                },
+                {
+                    "name": "customHeader",
+                    "defaultValue": "DatepickerHeaderComponent",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 88
+                },
+                {
+                    "name": "isSelected",
+                    "defaultValue": "() => {...}",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 100
+                },
+                {
+                    "name": "mockWeek",
+                    "defaultValue": "[new DateRange(new Date('11/13/2022'), new Date('11/19/2022')), new DateRange(new Date('11/20/2022'), new Date('11/26/2022'))]",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "[]",
+                    "optional": false,
+                    "description": "",
+                    "line": 89
+                },
+                {
+                    "name": "monthList",
+                    "defaultValue": "[\"January\", \"February\", \"March\", \"April\", \"May\", \"June\", \"July\", \"August\", \"September\", \"October\", \"November\", \"December\"]",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "[]",
+                    "optional": false,
+                    "description": "",
+                    "line": 90
+                },
+                {
+                    "name": "selectedDate",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "Date",
+                    "optional": false,
+                    "description": "",
+                    "line": 85
+                },
+                {
+                    "name": "selectedWeek",
+                    "defaultValue": "[]",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "any[]",
+                    "optional": false,
+                    "description": "",
+                    "line": 83
+                },
+                {
+                    "name": "templateRef",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "TemplateRef<any>",
+                    "optional": false,
+                    "description": "",
+                    "line": 81,
+                    "decorators": [
+                        {
+                            "name": "ViewChild",
+                            "stringifiedArguments": "TemplateRef"
+                        }
+                    ]
+                },
+                {
+                    "name": "weekSelected",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "any",
+                    "optional": false,
+                    "description": "",
+                    "line": 87
+                }
+            ],
+            "methodsClass": [
+                {
+                    "name": "_onSelectedChange",
+                    "args": [
+                        {
+                            "name": "date",
+                            "type": "Date | null",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 122,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "jsdoctags": [
+                        {
+                            "name": "date",
+                            "type": "Date | null",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "ngAfterViewChecked",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 186,
+                    "deprecated": false,
+                    "deprecationMessage": ""
+                }
+            ],
+            "deprecated": false,
+            "deprecationMessage": "",
+            "hostBindings": [],
+            "hostListeners": [],
+            "description": "",
+            "rawdescription": "\n",
+            "type": "component",
+            "sourceCode": "import { AfterViewChecked, Component, ViewEncapsulation, ViewChild, TemplateRef, Output, EventEmitter, Inject, Injectable, Optional } from '@angular/core';\r\nimport { DateRange, MatCalendar, MatDateRangeSelectionStrategy, MAT_DATE_RANGE_SELECTION_STRATEGY } from '@angular/material/datepicker';\r\nimport { DatepickerPanel } from './datepicker.directive';\r\nimport { DatepickerHeaderComponent } from './datepickerHeader.component';\r\nimport { DateAdapter, MatDateFormats, MAT_DATE_FORMATS } from '@angular/material/core';\r\n\r\n@Injectable()\r\nexport class MultiWeekRangeSelectionStrategy<D> implements MatDateRangeSelectionStrategy<D> {\r\n  constructor(private _dateAdapter: DateAdapter<D>) { }\r\n\r\n  selectionFinished(date: D | null): DateRange<D> {\r\n    return this._createWeekRange(date);\r\n  }\r\n\r\n  createPreview(activeDate: D | null): DateRange<D> {\r\n    return this._createWeekRange(activeDate);\r\n  }\r\n\r\n  private _createWeekRange(date: any | null): DateRange<D> {\r\n    if (date) {\r\n      switch (date?.getDay()) {\r\n        case 0: {\r\n          let start = this._dateAdapter.addCalendarDays(date, 0);\r\n          let end = this._dateAdapter.addCalendarDays(date, 6);\r\n          return new DateRange(start, end);\r\n        }\r\n        case 1: {\r\n          let start = this._dateAdapter.addCalendarDays(date, -1);\r\n          let end = this._dateAdapter.addCalendarDays(date, 5);\r\n          return new DateRange(start, end);\r\n        }\r\n        case 2: {\r\n          let start = this._dateAdapter.addCalendarDays(date, -2);\r\n          let end = this._dateAdapter.addCalendarDays(date, 4);\r\n          return new DateRange(start, end);\r\n        }\r\n        case 3: {\r\n          let start = this._dateAdapter.addCalendarDays(date, -3);\r\n          let end = this._dateAdapter.addCalendarDays(date, 3);\r\n          return new DateRange(start, end);\r\n        }\r\n        case 4: {\r\n          let start = this._dateAdapter.addCalendarDays(date, -4);\r\n          let end = this._dateAdapter.addCalendarDays(date, 2);\r\n          return new DateRange(start, end);\r\n        }\r\n        case 5: {\r\n          let start = this._dateAdapter.addCalendarDays(date, -5);\r\n          let end = this._dateAdapter.addCalendarDays(date, 1);\r\n          return new DateRange(start, end);\r\n        }\r\n        case 6: {\r\n          let start = this._dateAdapter.addCalendarDays(date, -6);\r\n          let end = this._dateAdapter.addCalendarDays(date, 0);\r\n          return new DateRange(start, end);\r\n        }\r\n      }\r\n    }\r\n\r\n    return new DateRange<D>(null, null);\r\n  }\r\n}\r\n\r\n@Component({\r\n  selector: 'lib-multiweekpicker',\r\n  template: `\r\n      <div class=\"calendar-wrapper\">\r\n        <mat-calendar\r\n          (selectedChange)=\"_onSelectedChange($event)\"\r\n          [headerComponent]=\"customHeader\"\r\n          [dateClass]=\"isSelected\"\r\n          [selected]=\"weekSelected\"\r\n          >\r\n        </mat-calendar>\r\n      </div>\r\n  `,\r\n  styleUrls: ['./datepicker.component.scss'],\r\n  encapsulation: ViewEncapsulation.None,\r\n})\r\nexport class MultiweekpickerComponent implements AfterViewChecked, DatepickerPanel {\r\n  @ViewChild(TemplateRef) templateRef!: TemplateRef<any>;\r\n  @Output() closed = new EventEmitter<void>();\r\n  selectedWeek: any[] = [];\r\n  @ViewChild(MatCalendar) calendar!: MatCalendar<Date>;\r\n  selectedDate!: Date;\r\n  calendarVisible = true;\r\n  weekSelected:any;\r\n  customHeader = DatepickerHeaderComponent;\r\n  mockWeek = [new DateRange(new Date('11/13/2022'), new Date('11/19/2022')), new DateRange(new Date('11/20/2022'), new Date('11/26/2022'))]\r\n  monthList = [\"January\", \"February\", \"March\", \"April\", \"May\", \"June\", \"July\", \"August\", \"September\", \"October\", \"November\", \"December\"];\r\n\r\n  constructor(private dateAdapter: DateAdapter<Date>, @Inject(MAT_DATE_FORMATS) private _dateFormats: MatDateFormats, @Optional()\r\n  @Inject(MAT_DATE_RANGE_SELECTION_STRATEGY)\r\n  private _rangeSelectionStrategy: MultiWeekRangeSelectionStrategy<any>) {\r\n    this.dateAdapter.setLocale(navigator.language);\r\n    //this._rangeSelectionStrategy.createPreview(new Date());\r\n    //this._onSelectedChange(new Date());\r\n  }\r\n\r\n  isSelected = (date: Date) => {\r\n    return this.selectedWeek.map((dateRange) => {\r\n      if (date.toISOString() === dateRange.start.toISOString()) {\r\n        return 'mat-calendar-body-range-start mat-calendar-body-in-range selected week'\r\n      }\r\n      else if (date.toISOString() === dateRange.end.toISOString()) {\r\n        return 'mat-calendar-body-range-end mat-calendar-body-in-range selected week'\r\n      }\r\n      else if(date >= dateRange.start && date <= dateRange.end) {\r\n        return 'mat-calendar-body-in-range selected week'\r\n      }\r\n      return ''\r\n    })\r\n  };\r\n\r\n  add = (arr: any[], range: any) => {\r\n    const start = arr.some(el => el.start.toISOString() === range.start.toISOString());\r\n    const end = arr.some(el => el.end.toISOString() === range.end.toISOString());\r\n    if (!start && !end) arr.push(range);\r\n    return arr;\r\n  }\r\n\r\n  _onSelectedChange(date: Date | null): void {\r\n    if (date) {\r\n      this._rangeSelectionStrategy.selectionFinished(date);\r\n      switch (date.getDay()) {\r\n        case 0: {\r\n          let start = this.dateAdapter.addCalendarDays(date, 0);\r\n          let end = this.dateAdapter.addCalendarDays(date, 6);\r\n          this.add(this.selectedWeek, new DateRange(start, end))\r\n          this.weekSelected = new DateRange(start, end);\r\n          this.calendar.updateTodaysDate();\r\n          return\r\n        }\r\n        case 1: {\r\n          let start = this.dateAdapter.addCalendarDays(date, -1);\r\n          let end = this.dateAdapter.addCalendarDays(date, 5);\r\n          this.add(this.selectedWeek, new DateRange(start, end))\r\n          this.weekSelected = new DateRange(start, end);\r\n          this.calendar.updateTodaysDate();\r\n          return\r\n        }\r\n        case 2: {\r\n          let start = this.dateAdapter.addCalendarDays(date, -2);\r\n          let end = this.dateAdapter.addCalendarDays(date, 4);\r\n          this.add(this.selectedWeek, new DateRange(start, end))\r\n          this.weekSelected = new DateRange(start, end);\r\n          this.calendar.updateTodaysDate();\r\n          return\r\n        }\r\n        case 3: {\r\n          let start = this.dateAdapter.addCalendarDays(date, -3);\r\n          let end = this.dateAdapter.addCalendarDays(date, 3);\r\n          this.add(this.selectedWeek, new DateRange(start, end))\r\n          this.weekSelected = new DateRange(start, end);\r\n          this.calendar.updateTodaysDate();\r\n          return\r\n        }\r\n        case 4: {\r\n          let start = this.dateAdapter.addCalendarDays(date, -4);\r\n          let end = this.dateAdapter.addCalendarDays(date, 2);\r\n          this.add(this.selectedWeek, new DateRange(start, end))\r\n          this.weekSelected = new DateRange(start, end);\r\n          this.calendar.updateTodaysDate();\r\n          return\r\n        }\r\n        case 5: {\r\n          let start = this.dateAdapter.addCalendarDays(date, -5);\r\n          let end = this.dateAdapter.addCalendarDays(date, 1);\r\n          this.add(this.selectedWeek, new DateRange(start, end))\r\n          this.weekSelected = new DateRange(start, end);\r\n          this.calendar.updateTodaysDate();\r\n          return\r\n        }\r\n        case 6: {\r\n          let start = this.dateAdapter.addCalendarDays(date, -6);\r\n          let end = this.dateAdapter.addCalendarDays(date, 0);\r\n          this.add(this.selectedWeek, new DateRange(start, end))\r\n          this.weekSelected = new DateRange(start, end);\r\n          this.calendar.updateTodaysDate();\r\n          return\r\n        }\r\n      }\r\n    }\r\n  }\r\n\r\n  ngAfterViewChecked(): void {\r\n    const circle1 = document.createElement('div');\r\n    circle1.className = 'circle';\r\n    const circle2 = document.createElement('div');\r\n    circle2.className = 'circle';\r\n    const today = document.querySelector(`[aria-label=\"${this.dateAdapter.format(new Date(), this._dateFormats.display.dateA11yLabel)}\"]`);\r\n    const oct4 = document.querySelector(`[aria-label=\"${this.dateAdapter.format(new Date(\"November 4, 2022\"), this._dateFormats.display.dateA11yLabel)}\"]`);\r\n    if (!today?.querySelector('.circle')) {\r\n      today?.appendChild(circle1);\r\n    }\r\n    if (!oct4?.querySelector('.circle')) {\r\n      oct4?.appendChild(circle2);\r\n    }\r\n  }\r\n\r\n}\r\n",
+            "assetsDirs": [],
+            "styleUrlsData": [
+                {
+                    "data": ".calendar-wrapper {\r\n    width: 296px;\r\n    background: #ffffff;\r\n    border: 1px solid #d2d8db;\r\n    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.24);\r\n    border-radius: 4px;\r\n}\r\n.mat-calendar-body {\r\n    font-weight: 400;\r\n    font-size: 13px;\r\n    line-height: 120%;\r\n}\r\n.circle {\r\n    position: relative;\r\n    width: 5px;\r\n    height: 5px;\r\n    border-radius: 50%;\r\n    top: 13px;\r\n    z-index: 1;\r\n    left: calc(50% - 5px / 2);\r\n}\r\n.mat-calendar-body-cell:not(.mat-calendar-body-disabled):hover\r\n    > .mat-calendar-body-cell-content:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical) {\r\n    background-color: #dbe6f0;\r\n}\r\n.mat-calendar-body-cell-content {\r\n    flex-direction: column;\r\n    & ~ .circle {\r\n        background: #005c99;\r\n    }\r\n}\r\n.mat-calendar-body-label {\r\n    opacity: 0;\r\n    &[colspan=\"7\"] {\r\n        display: none;\r\n    }\r\n}\r\n.mat-calendar-body-selected {\r\n    background-color: #005c99;\r\n    font-weight: 700;\r\n    font-size: 14px;\r\n    line-height: 130%;\r\n    &:hover {\r\n        background-color: #003d7a;\r\n    }\r\n    & ~ .circle {\r\n        background: #fff;\r\n    }\r\n}\r\n\r\n.mat-calendar-body-today:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical) {\r\n    border: none;\r\n    background: #ecf3f8;\r\n}\r\n.mat-calendar-body-today.mat-calendar-body-selected {\r\n    box-shadow: none;\r\n}\r\n.mat-calendar-table-header-divider {\r\n    display: none;\r\n}\r\n.mat-calendar-body-in-range::before {\r\n    background: #ecf3f8;\r\n}\r\n.mat-calendar-body-cell-container[data-mat-col=\"6\"] {\r\n    .mat-calendar-body-in-range::before {\r\n        width: 95%;\r\n        border-top-right-radius: 999px;\r\n        border-bottom-right-radius: 999px;\r\n    }\r\n}\r\n.mat-calendar-body-cell-container[data-mat-col=\"0\"] {\r\n    .mat-calendar-body-in-range::before {\r\n        left: 5%;\r\n        width: 95%;\r\n        border-top-left-radius: 999px;\r\n        border-bottom-left-radius: 999px;\r\n    }\r\n}\r\nsvg {\r\n    right: 30px;\r\n    font-size: 20px;\r\n    line-height: 40px;\r\n    cursor: pointer;\r\n    z-index: 1;\r\n}\r\n.calendar-svg {\r\n    background: url(./calendar.svg) no-repeat 98% center;\r\n    border-radius: 2px;\r\n    border: 1px solid #ccc;\r\n    height: 25px;\r\n    padding: 5px;\r\n    width: 250px;\r\n    cursor: pointer;\r\n}\r\n.mat-calendar-table-header {\r\n    span {\r\n        font-style: normal;\r\n        font-weight: 700;\r\n        font-size: 14px;\r\n        line-height: 130%;\r\n        color: #333333;\r\n    }\r\n}\r\n\r\n.selected {\r\n    .mat-calendar-body-cell-content {\r\n        border-radius: 50%;\r\n        background-color: #005c99;\r\n        font-weight: 700;\r\n        font-size: 14px;\r\n        line-height: 130%;\r\n        color: #ffffff;\r\n        &:hover {\r\n            background-color: #003d7a;\r\n        }\r\n    }\r\n    &:hover {\r\n        .mat-calendar-body-cell-content {\r\n            background-color: #003d7a;\r\n        }\r\n    }\r\n}\r\n\r\n.mat-calendar-body-cell.red {\r\n    background: red;\r\n}\r\n\r\n.week {\r\n    .mat-calendar-body-cell-content {\r\n        color: #ffffff;\r\n    }\r\n    &::before {\r\n        background: #005c99;\r\n    }\r\n    .mat-calendar-body-today:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical) {\r\n        background: #005c99;\r\n    }\r\n}\r\n.week:not(.mat-calendar-body-disabled):hover\r\n    > .mat-calendar-body-cell-content:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical) {\r\n    background: #003d7a;\r\n}\r\n\r\n// .mat-calendar-table-header th:not(.mat-calendar-table-header-divider):nth-last-child(2),\r\n// .mat-calendar-table-header th:not(.mat-calendar-table-header-divider):last-child,\r\n// .mat-calendar-body-cell-container:has(> .mat-calendar-body-cell.weekend) {\r\n//     display: none;\r\n// }\r\n",
+                    "styleUrl": "./datepicker.component.scss"
+                }
+            ],
+            "stylesData": "",
+            "constructorObj": {
+                "name": "constructor",
+                "description": "",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "args": [
+                    {
+                        "name": "dateAdapter",
+                        "type": "DateAdapter<Date>",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    },
+                    {
+                        "name": "_dateFormats",
+                        "type": "MatDateFormats",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    },
+                    {
+                        "name": "_rangeSelectionStrategy",
+                        "type": "MultiWeekRangeSelectionStrategy<any>",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    }
+                ],
+                "line": 90,
+                "jsdoctags": [
+                    {
+                        "name": "dateAdapter",
+                        "type": "DateAdapter<Date>",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "text": "param"
+                        }
+                    },
+                    {
+                        "name": "_dateFormats",
+                        "type": "MatDateFormats",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "text": "param"
+                        }
+                    },
+                    {
+                        "name": "_rangeSelectionStrategy",
+                        "type": "MultiWeekRangeSelectionStrategy<any>",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "text": "param"
+                        }
+                    }
+                ]
+            },
+            "implements": [
+                "AfterViewChecked",
+                "DatepickerPanel"
+            ]
+        },
+        {
             "name": "ProgressBarComponent",
             "id": "component-ProgressBarComponent-481884215786c709223bd9c82644238a04cb954b2af6f2adad7c2728a946f20fee1cc893e65c56de1f8c332694fd7c98aad3eddd51a73786f052002affba683f",
             "file": "projects/progress-bar/src/lib/progress-bar.component.ts",
@@ -4812,7 +5206,7 @@
         },
         {
             "name": "WeekpickerComponent",
-            "id": "component-WeekpickerComponent-d860b6f922522bcfc6888890a49217a9f21f014f5f88e0f86e2752ed6e9e7974426055b1758395c55c92907271d5ba0ad1cfba2d6fffc5e4ffba22ffdfb18d5b",
+            "id": "component-WeekpickerComponent-e0e3e5c5197a81282dfb28b48b655e979378737530725e9081cdb783a1551fd4734b5ec5375190e3292183ce90f3e3ee90ab928fcc7d324eb14d1c473d467beb",
             "file": "projects/datepicker/src/lib/dateweekpicker.component.ts",
             "encapsulation": [
                 "ViewEncapsulation.None"
@@ -4820,17 +5214,13 @@
             "entryComponents": [],
             "inputs": [],
             "outputs": [],
-            "providers": [
-                {
-                    "name": "{\n    provide: MAT_DATE_RANGE_SELECTION_STRATEGY, useClass: FiveDayRangeSelectionStrategy,\n}"
-                }
-            ],
+            "providers": [],
             "selector": "lib-weekpicker",
             "styleUrls": [
                 "./datepicker.component.scss"
             ],
             "styles": [],
-            "template": "<div class=\"calendar-wrapper\">\n  <mat-calendar\n    (selectedChange)=\"_onSelectedChange($event)\"\n    [selected]=\"selectedWeek\"\n    [headerComponent]=\"customHeader\"\n    >\n  </mat-calendar>\n</div>\n",
+            "template": "<div class=\"calendar-wrapper\">\n  <mat-calendar\n    (selectedChange)=\"_onSelectedChange($event)\"\n    [selected]=\"selectedWeek\"\n    [headerComponent]=\"customHeader\"\n    [dateClass]=\"isSelected\"\n    >\n  </mat-calendar>\n</div>\n",
             "templateUrl": [],
             "viewProviders": [],
             "inputsClass": [],
@@ -4840,7 +5230,7 @@
                     "defaultValue": "new EventEmitter<void>()",
                     "deprecated": false,
                     "deprecationMessage": "",
-                    "line": 53,
+                    "line": 82,
                     "type": "EventEmitter"
                 }
             ],
@@ -4852,7 +5242,7 @@
                     "type": "MatCalendar<Date>",
                     "optional": false,
                     "description": "",
-                    "line": 55,
+                    "line": 84,
                     "decorators": [
                         {
                             "name": "ViewChild",
@@ -4868,7 +5258,7 @@
                     "type": "",
                     "optional": false,
                     "description": "",
-                    "line": 57
+                    "line": 86
                 },
                 {
                     "name": "customHeader",
@@ -4878,17 +5268,17 @@
                     "type": "",
                     "optional": false,
                     "description": "",
-                    "line": 58
+                    "line": 87
                 },
                 {
-                    "name": "dateClass",
+                    "name": "isSelected",
                     "defaultValue": "() => {...}",
                     "deprecated": false,
                     "deprecationMessage": "",
                     "type": "",
                     "optional": false,
                     "description": "",
-                    "line": 65
+                    "line": 98
                 },
                 {
                     "name": "monthList",
@@ -4898,7 +5288,7 @@
                     "type": "[]",
                     "optional": false,
                     "description": "",
-                    "line": 59
+                    "line": 88
                 },
                 {
                     "name": "selectedDate",
@@ -4907,7 +5297,7 @@
                     "type": "Date",
                     "optional": false,
                     "description": "",
-                    "line": 56
+                    "line": 85
                 },
                 {
                     "name": "selectedWeek",
@@ -4916,7 +5306,7 @@
                     "type": "DateRange<Date>",
                     "optional": false,
                     "description": "",
-                    "line": 54
+                    "line": 83
                 },
                 {
                     "name": "templateRef",
@@ -4925,7 +5315,7 @@
                     "type": "TemplateRef<any>",
                     "optional": false,
                     "description": "",
-                    "line": 52,
+                    "line": 81,
                     "decorators": [
                         {
                             "name": "ViewChild",
@@ -4940,7 +5330,7 @@
                     "args": [
                         {
                             "name": "date",
-                            "type": "Date",
+                            "type": "Date | null",
                             "deprecated": false,
                             "deprecationMessage": ""
                         }
@@ -4948,13 +5338,13 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 76,
+                    "line": 113,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "jsdoctags": [
                         {
                             "name": "date",
-                            "type": "Date",
+                            "type": "Date | null",
                             "deprecated": false,
                             "deprecationMessage": "",
                             "tagName": {
@@ -4969,37 +5359,9 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 108,
+                    "line": 185,
                     "deprecated": false,
                     "deprecationMessage": ""
-                },
-                {
-                    "name": "redraw",
-                    "args": [
-                        {
-                            "name": "cal",
-                            "type": "MatCalendar<any>",
-                            "deprecated": false,
-                            "deprecationMessage": ""
-                        }
-                    ],
-                    "optional": false,
-                    "returnType": "void",
-                    "typeParameters": [],
-                    "line": 71,
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "jsdoctags": [
-                        {
-                            "name": "cal",
-                            "type": "MatCalendar<any>",
-                            "deprecated": false,
-                            "deprecationMessage": "",
-                            "tagName": {
-                                "text": "param"
-                            }
-                        }
-                    ]
                 }
             ],
             "deprecated": false,
@@ -5009,11 +5371,11 @@
             "description": "",
             "rawdescription": "\n",
             "type": "component",
-            "sourceCode": "import { AfterViewChecked, Component, ViewEncapsulation, ViewChild, TemplateRef, Output, EventEmitter, Inject, Injectable } from '@angular/core';\r\nimport { DateRange, DefaultMatCalendarRangeStrategy, MatCalendar, MatDateRangeSelectionStrategy, MAT_DATE_RANGE_SELECTION_STRATEGY } from '@angular/material/datepicker';\r\nimport { DatepickerPanel } from './datepicker.directive';\r\nimport { DatepickerHeaderComponent } from './datepickerHeader.component';\r\nimport { DateAdapter, MatDateFormats, MAT_DATE_FORMATS } from '@angular/material/core';\r\n\r\n@Injectable()\r\nexport class FiveDayRangeSelectionStrategy<D> implements MatDateRangeSelectionStrategy<D> {\r\n  constructor(private _dateAdapter: DateAdapter<D>) {}\r\n\r\n  selectionFinished(date: D | null): DateRange<D> {\r\n    return this._createFiveDayRange(date);\r\n  }\r\n\r\n  createPreview(activeDate: D | null): DateRange<D> {\r\n    return this._createFiveDayRange(activeDate);\r\n  }\r\n\r\n  private _createFiveDayRange(date: D | null): DateRange<D> {\r\n    if (date) {\r\n      const start = this._dateAdapter.addCalendarDays(date, -2);\r\n      const end = this._dateAdapter.addCalendarDays(date, 2);\r\n      return new DateRange<D>(start, end);\r\n    }\r\n\r\n    return new DateRange<D>(null, null);\r\n  }\r\n}\r\n\r\n@Component({\r\n  selector: 'lib-weekpicker',\r\n  template: `\r\n      <div class=\"calendar-wrapper\">\r\n        <mat-calendar\r\n          (selectedChange)=\"_onSelectedChange($event)\"\r\n          [selected]=\"selectedWeek\"\r\n          [headerComponent]=\"customHeader\"\r\n          >\r\n        </mat-calendar>\r\n      </div>\r\n  `,\r\n  styleUrls: ['./datepicker.component.scss'],\r\n  encapsulation: ViewEncapsulation.None,\r\n  providers: [\r\n    {\r\n        provide: MAT_DATE_RANGE_SELECTION_STRATEGY,\r\n        useClass: FiveDayRangeSelectionStrategy,\r\n      },\r\n  ],\r\n})\r\nexport class WeekpickerComponent implements AfterViewChecked, DatepickerPanel {\r\n  @ViewChild(TemplateRef) templateRef!: TemplateRef<any>;\r\n  @Output() closed = new EventEmitter<void>();\r\n  selectedWeek!: DateRange<Date>;\r\n  @ViewChild(MatCalendar) calendar!: MatCalendar<Date>;\r\n  selectedDate!: Date;\r\n  calendarVisible = true;\r\n  customHeader = DatepickerHeaderComponent;\r\n  monthList = [\"January\", \"February\", \"March\", \"April\", \"May\", \"June\", \"July\", \"August\", \"September\", \"October\", \"November\", \"December\"];\r\n\r\n  constructor(private dateAdapter: DateAdapter<Date>, @Inject(MAT_DATE_FORMATS) private _dateFormats: MatDateFormats) {\r\n    this.dateAdapter.setLocale(navigator.language); \r\n  }\r\n\r\n  dateClass=(date: any) => {\r\n    const days =\r\n      (date.getTime() - this.selectedDate.getTime()) / (24 * 60 * 60 * 1000);\r\n    return days >= 0 && days < 5 ? 'red' : null;\r\n  };\r\n  \r\n  redraw(cal:MatCalendar<any>)\r\n  {\r\n      cal.updateTodaysDate() \r\n  }\r\n\r\n  _onSelectedChange(date: Date): void {\r\n    if (\r\n      this.selectedWeek &&\r\n      this.selectedWeek.start &&\r\n      date > this.selectedWeek.start &&\r\n      !this.selectedWeek.end\r\n    ) {\r\n      this.selectedWeek = new DateRange(\r\n        this.selectedWeek.start,\r\n        date\r\n      );\r\n      this.closed.emit();\r\n    } else {\r\n      this.selectedWeek = new DateRange(date, null);\r\n    }\r\n  }\r\n\r\n  get SelectedRange() {\r\n    if(this.selectedWeek){\r\n    return this.selectedWeek.start?.toLocaleDateString()+' - '+ (this.selectedWeek.end ? this.selectedWeek.end?.toLocaleDateString() : '');\r\n    }\r\n    return '';\r\n  }\r\n\r\n  set SelectedRange(value: any){\r\n    if (value) {\r\n      try {\r\n        this.selectedWeek = new DateRange(new Date(value.split('-')[0]),new Date(value.split('-')[1]));\r\n      } catch(e) {}\r\n    }\r\n  }\r\n\r\n  ngAfterViewChecked(): void {\r\n    const circle1 = document.createElement('div');\r\n    circle1.className = 'circle';\r\n    const circle2 = document.createElement('div');\r\n    circle2.className = 'circle';\r\n    const today = document.querySelector(`[aria-label=\"${this.dateAdapter.format(new Date(), this._dateFormats.display.dateA11yLabel)}\"]`);\r\n    const oct4 = document.querySelector(`[aria-label=\"${this.dateAdapter.format(new Date(\"November 4, 2022\"), this._dateFormats.display.dateA11yLabel)}\"]`);\r\n    if (!today?.querySelector('.circle')) {\r\n      today?.appendChild(circle1);\r\n    }\r\n    if (!oct4?.querySelector('.circle')) {\r\n      oct4?.appendChild(circle2);\r\n    }\r\n  }\r\n\r\n}\r\n",
+            "sourceCode": "import { AfterViewChecked, Component, ViewEncapsulation, ViewChild, TemplateRef, Output, EventEmitter, Inject, Injectable, Optional } from '@angular/core';\r\nimport { DateRange, DefaultMatCalendarRangeStrategy, MatCalendar, MatDateRangeSelectionStrategy, MAT_DATE_RANGE_SELECTION_STRATEGY } from '@angular/material/datepicker';\r\nimport { DatepickerPanel } from './datepicker.directive';\r\nimport { DatepickerHeaderComponent } from './datepickerHeader.component';\r\nimport { DateAdapter, MatDateFormats, MAT_DATE_FORMATS } from '@angular/material/core';\r\n\r\n@Injectable()\r\nexport class WeekRangeSelectionStrategy<D> implements MatDateRangeSelectionStrategy<D> {\r\n  constructor(private _dateAdapter: DateAdapter<D>) { }\r\n\r\n  selectionFinished(date: D | null): DateRange<D> {\r\n    return this._createWeekRange(date);\r\n  }\r\n\r\n  createPreview(activeDate: D | null): DateRange<D> {\r\n    return this._createWeekRange(activeDate);\r\n  }\r\n\r\n  private _createWeekRange(date: any | null): DateRange<D> {\r\n    if (date) {\r\n      switch (date?.getDay()) {\r\n        case 0: {\r\n          let start = this._dateAdapter.addCalendarDays(date, 0);\r\n          let end = this._dateAdapter.addCalendarDays(date, 6);\r\n          return new DateRange(start, end);\r\n        }\r\n        case 1: {\r\n          let start = this._dateAdapter.addCalendarDays(date, -1);\r\n          let end = this._dateAdapter.addCalendarDays(date, 5);\r\n          return new DateRange(start, end);\r\n        }\r\n        case 2: {\r\n          let start = this._dateAdapter.addCalendarDays(date, -2);\r\n          let end = this._dateAdapter.addCalendarDays(date, 4);\r\n          return new DateRange(start, end);\r\n        }\r\n        case 3: {\r\n          let start = this._dateAdapter.addCalendarDays(date, -3);\r\n          let end = this._dateAdapter.addCalendarDays(date, 3);\r\n          return new DateRange(start, end);\r\n        }\r\n        case 4: {\r\n          let start = this._dateAdapter.addCalendarDays(date, -4);\r\n          let end = this._dateAdapter.addCalendarDays(date, 2);\r\n          return new DateRange(start, end);\r\n        }\r\n        case 5: {\r\n          let start = this._dateAdapter.addCalendarDays(date, -5);\r\n          let end = this._dateAdapter.addCalendarDays(date, 1);\r\n          return new DateRange(start, end);\r\n        }\r\n        case 6: {\r\n          let start = this._dateAdapter.addCalendarDays(date, -6);\r\n          let end = this._dateAdapter.addCalendarDays(date, 0);\r\n          return new DateRange(start, end);\r\n        }\r\n      }\r\n    }\r\n\r\n    return new DateRange<D>(null, null);\r\n  }\r\n}\r\n\r\n@Component({\r\n  selector: 'lib-weekpicker',\r\n  template: `\r\n      <div class=\"calendar-wrapper\">\r\n        <mat-calendar\r\n          (selectedChange)=\"_onSelectedChange($event)\"\r\n          [selected]=\"selectedWeek\"\r\n          [headerComponent]=\"customHeader\"\r\n          [dateClass]=\"isSelected\"\r\n          >\r\n        </mat-calendar>\r\n      </div>\r\n  `,\r\n  styleUrls: ['./datepicker.component.scss'],\r\n  encapsulation: ViewEncapsulation.None,\r\n})\r\nexport class WeekpickerComponent implements AfterViewChecked, DatepickerPanel {\r\n  @ViewChild(TemplateRef) templateRef!: TemplateRef<any>;\r\n  @Output() closed = new EventEmitter<void>();\r\n  selectedWeek!: DateRange<Date>;\r\n  @ViewChild(MatCalendar) calendar!: MatCalendar<Date>;\r\n  selectedDate!: Date;\r\n  calendarVisible = true;\r\n  customHeader = DatepickerHeaderComponent;\r\n  monthList = [\"January\", \"February\", \"March\", \"April\", \"May\", \"June\", \"July\", \"August\", \"September\", \"October\", \"November\", \"December\"];\r\n\r\n  constructor(private dateAdapter: DateAdapter<Date>, @Inject(MAT_DATE_FORMATS) private _dateFormats: MatDateFormats, @Optional()\r\n  @Inject(MAT_DATE_RANGE_SELECTION_STRATEGY)\r\n  private _rangeSelectionStrategy: WeekRangeSelectionStrategy<any>) {\r\n    this.dateAdapter.setLocale(navigator.language);\r\n    //this._rangeSelectionStrategy.createPreview(new Date());\r\n    //this._onSelectedChange(new Date());\r\n  }\r\n\r\n  isSelected = (date: Date) => {\r\n    if (this.selectedWeek?.start && this.selectedWeek?.end) {\r\n      if (date.toISOString() === this.selectedWeek.start.toISOString()) {\r\n        return 'mat-calendar-body-range-start mat-calendar-body-in-range selected week'\r\n      }\r\n      else if (date.toISOString() === this.selectedWeek.end.toISOString()) {\r\n        return 'mat-calendar-body-range-end mat-calendar-body-in-range selected week'\r\n      }\r\n      else if (date >= this.selectedWeek.start && date <= this.selectedWeek.end) {\r\n        return 'mat-calendar-body-in-range selected week'\r\n      }\r\n    }\r\n    return ''\r\n  }\r\n\r\n  _onSelectedChange(date: Date | null): void {\r\n    if (date) {\r\n      this._rangeSelectionStrategy.selectionFinished(date);\r\n      switch (date.getDay()) {\r\n        case 0: {\r\n          let start = this.dateAdapter.addCalendarDays(date, 0);\r\n          let end = this.dateAdapter.addCalendarDays(date, 6);\r\n          this.selectedWeek = new DateRange(start, end);\r\n          this.calendar.updateTodaysDate();\r\n          return\r\n        }\r\n        case 1: {\r\n          let start = this.dateAdapter.addCalendarDays(date, -1);\r\n          let end = this.dateAdapter.addCalendarDays(date, 5);\r\n          this.selectedWeek = new DateRange(start, end);\r\n          this.calendar.updateTodaysDate();\r\n          return\r\n        }\r\n        case 2: {\r\n          let start = this.dateAdapter.addCalendarDays(date, -2);\r\n          let end = this.dateAdapter.addCalendarDays(date, 4);\r\n          this.selectedWeek = new DateRange(start, end);\r\n          this.calendar.updateTodaysDate();\r\n          return\r\n        }\r\n        case 3: {\r\n          let start = this.dateAdapter.addCalendarDays(date, -3);\r\n          let end = this.dateAdapter.addCalendarDays(date, 3);\r\n          this.selectedWeek = new DateRange(start, end);\r\n          this.calendar.updateTodaysDate();\r\n          return\r\n        }\r\n        case 4: {\r\n          let start = this.dateAdapter.addCalendarDays(date, -4);\r\n          let end = this.dateAdapter.addCalendarDays(date, 2);\r\n          this.selectedWeek = new DateRange(start, end);\r\n          this.calendar.updateTodaysDate();\r\n          return\r\n        }\r\n        case 5: {\r\n          let start = this.dateAdapter.addCalendarDays(date, -5);\r\n          let end = this.dateAdapter.addCalendarDays(date, 1);\r\n          this.selectedWeek = new DateRange(start, end);\r\n          this.calendar.updateTodaysDate();\r\n          return\r\n        }\r\n        case 6: {\r\n          let start = this.dateAdapter.addCalendarDays(date, -6);\r\n          let end = this.dateAdapter.addCalendarDays(date, 0);\r\n          this.selectedWeek = new DateRange(start, end);\r\n          this.calendar.updateTodaysDate();\r\n          return\r\n        }\r\n      }\r\n    }\r\n  }\r\n\r\n  get SelectedRange() {\r\n    if (this.selectedWeek) {\r\n      return this.selectedWeek.start?.toLocaleDateString() + ' - ' + (this.selectedWeek.end ? this.selectedWeek.end?.toLocaleDateString() : '');\r\n    }\r\n    return '';\r\n  }\r\n\r\n  set SelectedRange(value: any) {\r\n    if (value) {\r\n      try {\r\n        this.selectedWeek = new DateRange(new Date(value.split('-')[0]), new Date(value.split('-')[1]));\r\n      } catch (e) { }\r\n    }\r\n  }\r\n\r\n  ngAfterViewChecked(): void {\r\n    const circle1 = document.createElement('div');\r\n    circle1.className = 'circle';\r\n    const circle2 = document.createElement('div');\r\n    circle2.className = 'circle';\r\n    const today = document.querySelector(`[aria-label=\"${this.dateAdapter.format(new Date(), this._dateFormats.display.dateA11yLabel)}\"]`);\r\n    const oct4 = document.querySelector(`[aria-label=\"${this.dateAdapter.format(new Date(\"November 4, 2022\"), this._dateFormats.display.dateA11yLabel)}\"]`);\r\n    if (!today?.querySelector('.circle')) {\r\n      today?.appendChild(circle1);\r\n    }\r\n    if (!oct4?.querySelector('.circle')) {\r\n      oct4?.appendChild(circle2);\r\n    }\r\n  }\r\n\r\n}\r\n",
             "assetsDirs": [],
             "styleUrlsData": [
                 {
-                    "data": ".calendar-wrapper {\r\n    width: 296px;\r\n    background: #ffffff;\r\n    border: 1px solid #d2d8db;\r\n    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.24);\r\n    border-radius: 4px;\r\n}\r\n.mat-calendar-body {\r\n    font-weight: 400;\r\n    font-size: 13px;\r\n    line-height: 120%;\r\n}\r\n.circle {\r\n    position: relative;\r\n    width: 5px;\r\n    height: 5px;\r\n    border-radius: 50%;\r\n    top: 13px;\r\n    z-index: 1;\r\n    left: calc(50% - 5px / 2);\r\n}\r\n.mat-calendar-body-cell:not(.mat-calendar-body-disabled):hover\r\n    > .mat-calendar-body-cell-content:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical) {\r\n    background-color: #dbe6f0;\r\n}\r\n.mat-calendar-body-cell-content {\r\n    flex-direction: column;\r\n    & ~ .circle {\r\n        background: #005c99;\r\n    }\r\n}\r\n.mat-calendar-body-label {\r\n    opacity: 0;\r\n    &[colspan=\"7\"] {\r\n        display: none;\r\n    }\r\n}\r\n.mat-calendar-body-selected {\r\n    background-color: #005c99;\r\n    font-weight: 700;\r\n    font-size: 14px;\r\n    line-height: 130%;\r\n    &:hover {\r\n        background-color: #003d7a;\r\n    }\r\n    & ~ .circle {\r\n        background: #fff;\r\n    }\r\n}\r\n\r\n.mat-calendar-body-today:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical) {\r\n    border: none;\r\n    background: #ecf3f8;\r\n}\r\n.mat-calendar-body-today.mat-calendar-body-selected {\r\n    box-shadow: none;\r\n}\r\n.mat-calendar-table-header-divider {\r\n    display: none;\r\n}\r\n.mat-calendar-body-in-range::before {\r\n    background: #ecf3f8;\r\n}\r\n.mat-calendar-body-cell-container[data-mat-col=\"6\"] {\r\n    .mat-calendar-body-in-range::before {\r\n        width: 95%;\r\n        border-top-right-radius: 999px;\r\n        border-bottom-right-radius: 999px;\r\n    }\r\n}\r\n.mat-calendar-body-cell-container[data-mat-col=\"0\"] {\r\n    .mat-calendar-body-in-range::before {\r\n        left: 5%;\r\n        width: 95%;\r\n        border-top-left-radius: 999px;\r\n        border-bottom-left-radius: 999px;\r\n    }\r\n}\r\nsvg {\r\n    right: 30px;\r\n    font-size: 20px;\r\n    line-height: 40px;\r\n    cursor: pointer;\r\n    z-index: 1;\r\n}\r\n.calendar-svg {\r\n    background: url(./calendar.svg) no-repeat 98% center;\r\n    border-radius: 2px;\r\n    border: 1px solid #ccc;\r\n    height: 25px;\r\n    padding: 5px;\r\n    width: 250px;\r\n    cursor: pointer;\r\n}\r\n.mat-calendar-table-header {\r\n    span {\r\n        font-style: normal;\r\n        font-weight: 700;\r\n        font-size: 14px;\r\n        line-height: 130%;\r\n        color: #333333;\r\n    }\r\n}\r\n\r\n.selected {\r\n    .mat-calendar-body-cell-content {\r\n        border-radius: 50%;\r\n        background-color: #005c99;\r\n        font-weight: 700;\r\n        font-size: 14px;\r\n        line-height: 130%;\r\n        color: #ffffff;\r\n        &:hover {\r\n            background-color: #003d7a !important;\r\n        }\r\n    }\r\n    &:hover {\r\n        .mat-calendar-body-cell-content {\r\n            background-color: #003d7a !important;\r\n        }\r\n    }\r\n}\r\n\r\n.mat-calendar-body-cell.red {\r\n    background: red;\r\n}\r\n\r\n// .mat-calendar-table-header th:not(.mat-calendar-table-header-divider):nth-last-child(2),\r\n// .mat-calendar-table-header th:not(.mat-calendar-table-header-divider):last-child,\r\n// .mat-calendar-body-cell-container:has(> .mat-calendar-body-cell.weekend) {\r\n//     display: none;\r\n// }\r\n",
+                    "data": ".calendar-wrapper {\r\n    width: 296px;\r\n    background: #ffffff;\r\n    border: 1px solid #d2d8db;\r\n    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.24);\r\n    border-radius: 4px;\r\n}\r\n.mat-calendar-body {\r\n    font-weight: 400;\r\n    font-size: 13px;\r\n    line-height: 120%;\r\n}\r\n.circle {\r\n    position: relative;\r\n    width: 5px;\r\n    height: 5px;\r\n    border-radius: 50%;\r\n    top: 13px;\r\n    z-index: 1;\r\n    left: calc(50% - 5px / 2);\r\n}\r\n.mat-calendar-body-cell:not(.mat-calendar-body-disabled):hover\r\n    > .mat-calendar-body-cell-content:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical) {\r\n    background-color: #dbe6f0;\r\n}\r\n.mat-calendar-body-cell-content {\r\n    flex-direction: column;\r\n    & ~ .circle {\r\n        background: #005c99;\r\n    }\r\n}\r\n.mat-calendar-body-label {\r\n    opacity: 0;\r\n    &[colspan=\"7\"] {\r\n        display: none;\r\n    }\r\n}\r\n.mat-calendar-body-selected {\r\n    background-color: #005c99;\r\n    font-weight: 700;\r\n    font-size: 14px;\r\n    line-height: 130%;\r\n    &:hover {\r\n        background-color: #003d7a;\r\n    }\r\n    & ~ .circle {\r\n        background: #fff;\r\n    }\r\n}\r\n\r\n.mat-calendar-body-today:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical) {\r\n    border: none;\r\n    background: #ecf3f8;\r\n}\r\n.mat-calendar-body-today.mat-calendar-body-selected {\r\n    box-shadow: none;\r\n}\r\n.mat-calendar-table-header-divider {\r\n    display: none;\r\n}\r\n.mat-calendar-body-in-range::before {\r\n    background: #ecf3f8;\r\n}\r\n.mat-calendar-body-cell-container[data-mat-col=\"6\"] {\r\n    .mat-calendar-body-in-range::before {\r\n        width: 95%;\r\n        border-top-right-radius: 999px;\r\n        border-bottom-right-radius: 999px;\r\n    }\r\n}\r\n.mat-calendar-body-cell-container[data-mat-col=\"0\"] {\r\n    .mat-calendar-body-in-range::before {\r\n        left: 5%;\r\n        width: 95%;\r\n        border-top-left-radius: 999px;\r\n        border-bottom-left-radius: 999px;\r\n    }\r\n}\r\nsvg {\r\n    right: 30px;\r\n    font-size: 20px;\r\n    line-height: 40px;\r\n    cursor: pointer;\r\n    z-index: 1;\r\n}\r\n.calendar-svg {\r\n    background: url(./calendar.svg) no-repeat 98% center;\r\n    border-radius: 2px;\r\n    border: 1px solid #ccc;\r\n    height: 25px;\r\n    padding: 5px;\r\n    width: 250px;\r\n    cursor: pointer;\r\n}\r\n.mat-calendar-table-header {\r\n    span {\r\n        font-style: normal;\r\n        font-weight: 700;\r\n        font-size: 14px;\r\n        line-height: 130%;\r\n        color: #333333;\r\n    }\r\n}\r\n\r\n.selected {\r\n    .mat-calendar-body-cell-content {\r\n        border-radius: 50%;\r\n        background-color: #005c99;\r\n        font-weight: 700;\r\n        font-size: 14px;\r\n        line-height: 130%;\r\n        color: #ffffff;\r\n        &:hover {\r\n            background-color: #003d7a;\r\n        }\r\n    }\r\n    &:hover {\r\n        .mat-calendar-body-cell-content {\r\n            background-color: #003d7a;\r\n        }\r\n    }\r\n}\r\n\r\n.mat-calendar-body-cell.red {\r\n    background: red;\r\n}\r\n\r\n.week {\r\n    .mat-calendar-body-cell-content {\r\n        color: #ffffff;\r\n    }\r\n    &::before {\r\n        background: #005c99;\r\n    }\r\n    .mat-calendar-body-today:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical) {\r\n        background: #005c99;\r\n    }\r\n}\r\n.week:not(.mat-calendar-body-disabled):hover\r\n    > .mat-calendar-body-cell-content:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical) {\r\n    background: #003d7a;\r\n}\r\n\r\n// .mat-calendar-table-header th:not(.mat-calendar-table-header-divider):nth-last-child(2),\r\n// .mat-calendar-table-header th:not(.mat-calendar-table-header-divider):last-child,\r\n// .mat-calendar-body-cell-container:has(> .mat-calendar-body-cell.weekend) {\r\n//     display: none;\r\n// }\r\n",
                     "styleUrl": "./datepicker.component.scss"
                 }
             ],
@@ -5035,9 +5397,15 @@
                         "type": "MatDateFormats",
                         "deprecated": false,
                         "deprecationMessage": ""
+                    },
+                    {
+                        "name": "_rangeSelectionStrategy",
+                        "type": "WeekRangeSelectionStrategy<any>",
+                        "deprecated": false,
+                        "deprecationMessage": ""
                     }
                 ],
-                "line": 59,
+                "line": 88,
                 "jsdoctags": [
                     {
                         "name": "dateAdapter",
@@ -5051,6 +5419,15 @@
                     {
                         "name": "_dateFormats",
                         "type": "MatDateFormats",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "text": "param"
+                        }
+                    },
+                    {
+                        "name": "_rangeSelectionStrategy",
+                        "type": "WeekRangeSelectionStrategy<any>",
                         "deprecated": false,
                         "deprecationMessage": "",
                         "tagName": {
@@ -5080,7 +5457,7 @@
                             }
                         ],
                         "returnType": "void",
-                        "line": 100,
+                        "line": 177,
                         "jsdoctags": [
                             {
                                 "name": "value",
@@ -5097,7 +5474,7 @@
                         "name": "SelectedRange",
                         "type": "",
                         "returnType": "",
-                        "line": 93
+                        "line": 170
                     }
                 }
             }
@@ -5150,13 +5527,13 @@
         },
         {
             "name": "DatepickerModule",
-            "id": "module-DatepickerModule-7fbd3234c53ddb01a7126c0741cccb2428b271bd902cdde18c3bbd97074b8ce143f516e709f40040d2013a542d4a3a8054b6b6d92777c4505b041b7cb95fa761",
+            "id": "module-DatepickerModule-cb4f1809e6cc656c7b7a288a550ed5c50eba998391ffd7449854b64837732af7e6d67d9549b64921f21bc376c479667a97b9e4ab7b72e5c0e92391cff9932d15",
             "description": "",
             "deprecationMessage": "",
             "deprecated": false,
             "file": "projects/datepicker/src/lib/datepicker.module.ts",
             "methods": [],
-            "sourceCode": "import { NgModule } from '@angular/core';\nimport { DatepickerComponent } from './datepicker.component';\nimport {MatDatepickerModule} from '@angular/material/datepicker';\nimport { DateAdapter, MatNativeDateModule } from '@angular/material/core';\nimport { BrowserAnimationsModule } from \"@angular/platform-browser/animations\";\nimport { DatepickerHeaderComponent } from './datepickerHeader.component';\nimport { DaterangepickerComponent } from './daterangepicker.component';\nimport { DatePickerDirective } from './datepicker.directive';\nimport { CommonModule } from '@angular/common';\nimport { FormsModule } from '@angular/forms';\nimport { DatePipe } from '@angular/common';\nimport { CalendarComponent } from './calendar.component';\nimport { WeekpickerComponent } from './dateweekpicker.component';\n\n@NgModule({\n  declarations: [\n    DatepickerComponent,\n    DatepickerHeaderComponent,\n    DaterangepickerComponent,\n    DatePickerDirective,\n    CalendarComponent,\n    WeekpickerComponent\n  ],\n  imports: [\n    MatDatepickerModule,\n    MatNativeDateModule,\n    BrowserAnimationsModule,\n    CommonModule,\n    FormsModule\n  ],\n  exports: [\n    DatepickerComponent,\n    DatepickerHeaderComponent,\n    DaterangepickerComponent,\n    DatePickerDirective,\n    CalendarComponent,\n    WeekpickerComponent\n  ],\n  providers: [\n    DatePipe\n  ]\n})\nexport class DatepickerModule { }\n",
+            "sourceCode": "import { NgModule } from '@angular/core';\nimport { DatepickerComponent } from './datepicker.component';\nimport {MatDatepickerModule} from '@angular/material/datepicker';\nimport { DateAdapter, MatNativeDateModule } from '@angular/material/core';\nimport { BrowserAnimationsModule } from \"@angular/platform-browser/animations\";\nimport { DatepickerHeaderComponent } from './datepickerHeader.component';\nimport { DaterangepickerComponent } from './daterangepicker.component';\nimport { DatePickerDirective } from './datepicker.directive';\nimport { CommonModule } from '@angular/common';\nimport { FormsModule } from '@angular/forms';\nimport { DatePipe } from '@angular/common';\nimport { CalendarComponent } from './calendar.component';\nimport { WeekpickerComponent } from './dateweekpicker.component';\nimport { MultiweekpickerComponent } from './multiWeekPicker.component';\n\n@NgModule({\n  declarations: [\n    DatepickerComponent,\n    DatepickerHeaderComponent,\n    DaterangepickerComponent,\n    DatePickerDirective,\n    CalendarComponent,\n    WeekpickerComponent,\n    MultiweekpickerComponent\n  ],\n  imports: [\n    MatDatepickerModule,\n    MatNativeDateModule,\n    BrowserAnimationsModule,\n    CommonModule,\n    FormsModule\n  ],\n  exports: [\n    DatepickerComponent,\n    DatepickerHeaderComponent,\n    DaterangepickerComponent,\n    DatePickerDirective,\n    CalendarComponent,\n    WeekpickerComponent,\n    MultiweekpickerComponent\n  ],\n  providers: [\n    DatePipe\n  ]\n})\nexport class DatepickerModule { }\n",
             "children": [
                 {
                     "type": "providers",
@@ -5179,6 +5556,9 @@
                         },
                         {
                             "name": "DaterangepickerComponent"
+                        },
+                        {
+                            "name": "MultiweekpickerComponent"
                         },
                         {
                             "name": "WeekpickerComponent"
@@ -5206,6 +5586,9 @@
                         },
                         {
                             "name": "DaterangepickerComponent"
+                        },
+                        {
+                            "name": "MultiweekpickerComponent"
                         },
                         {
                             "name": "WeekpickerComponent"
@@ -6067,6 +6450,26 @@
                 "deprecationMessage": "",
                 "type": "",
                 "defaultValue": "AccordionStory.bind({})"
+            },
+            {
+                "name": "Multiweekpicker",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "projects/datepicker/src/lib/multiWeekPicker.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "MultiweekpickerStory.bind({})"
+            },
+            {
+                "name": "MultiweekpickerStory",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "projects/datepicker/src/lib/multiWeekPicker.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "Story",
+                "defaultValue": "(args) => ({\r\n    props: args,\r\n    template: `\r\n    <lib-multiweekpicker></lib-multiweekpicker>\r\n    `\r\n})"
             },
             {
                 "name": "Primary",
@@ -7383,6 +7786,28 @@
                     "defaultValue": "LoaderStory.bind({})"
                 }
             ],
+            "projects/datepicker/src/lib/multiWeekPicker.stories.ts": [
+                {
+                    "name": "Multiweekpicker",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "projects/datepicker/src/lib/multiWeekPicker.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "MultiweekpickerStory.bind({})"
+                },
+                {
+                    "name": "MultiweekpickerStory",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "projects/datepicker/src/lib/multiWeekPicker.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "Story",
+                    "defaultValue": "(args) => ({\r\n    props: args,\r\n    template: `\r\n    <lib-multiweekpicker></lib-multiweekpicker>\r\n    `\r\n})"
+                }
+            ],
             "projects/tabs/src/lib/tabs.stories.ts": [
                 {
                     "name": "PrimaryExtraLarge",
@@ -8418,14 +8843,14 @@
                 "linktype": "component",
                 "name": "WeekpickerComponent",
                 "coveragePercent": 0,
-                "coverageCount": "0/14",
+                "coverageCount": "0/13",
                 "status": "low"
             },
             {
                 "filePath": "projects/datepicker/src/lib/dateweekpicker.component.ts",
                 "type": "injectable",
                 "linktype": "injectable",
-                "name": "FiveDayRangeSelectionStrategy",
+                "name": "WeekRangeSelectionStrategy",
                 "coveragePercent": 0,
                 "coverageCount": "0/5",
                 "status": "low"
@@ -8446,6 +8871,44 @@
                 "linktype": "miscellaneous",
                 "linksubtype": "variable",
                 "name": "WeekpickerStory",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "projects/datepicker/src/lib/multiWeekPicker.component.ts",
+                "type": "component",
+                "linktype": "component",
+                "name": "MultiweekpickerComponent",
+                "coveragePercent": 0,
+                "coverageCount": "0/16",
+                "status": "low"
+            },
+            {
+                "filePath": "projects/datepicker/src/lib/multiWeekPicker.component.ts",
+                "type": "injectable",
+                "linktype": "injectable",
+                "name": "MultiWeekRangeSelectionStrategy",
+                "coveragePercent": 0,
+                "coverageCount": "0/5",
+                "status": "low"
+            },
+            {
+                "filePath": "projects/datepicker/src/lib/multiWeekPicker.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "Multiweekpicker",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "projects/datepicker/src/lib/multiWeekPicker.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "MultiweekpickerStory",
                 "coveragePercent": 0,
                 "coverageCount": "0/1",
                 "status": "low"
